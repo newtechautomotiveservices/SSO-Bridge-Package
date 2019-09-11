@@ -1,0 +1,19 @@
+{
+    "name": "newtech/ssobridge",
+    "description": "This package connects products to the Single Sign On System.",
+    "homepage": "https://github.com/newtechautomotiveservices/SSO-Bridge-Package",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Andrew Gosselin",
+            "email": "andrew.gosselin@ntautoservices.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-0": {
+            "Newtech\\SSOBridge\\": "src/"
+        }
+    }
+}
