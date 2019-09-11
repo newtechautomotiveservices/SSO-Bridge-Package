@@ -1,6 +1,6 @@
 <?php
 
-namespace Newtech\SSOAuth\Models;
+namespace Newtech\SSOBridge\Models;
 
 use Illuminate\Database\Eloquent\Model;
 

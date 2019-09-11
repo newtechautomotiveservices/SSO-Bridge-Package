@@ -114,7 +114,7 @@
                          }
                      });
                       jQuery.ajax({
-                         url: "{{'/ssoauth/ajax' . config('ssoauth.main.login_route')}}",
+                         url: "{{'/ssoauth/ajax' . config('ssobridge.main.login_route')}}",
                          method: 'post',
                          headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
                          data: {
@@ -125,7 +125,7 @@
                          success: function(result){
                           console.log(result);
                              if (result == "true") {
-                                 window.location = "{!! config('ssoauth.main.home_route') !!}"
+                                 window.location = "{!! config('ssobridge.main.home_route') !!}"
                              } else {
                                  invalidError.style.display = "block";
                              }

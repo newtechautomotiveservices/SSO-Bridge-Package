@@ -1,11 +1,11 @@
 <?php
 Route::group(['middleware' => ['web']], function () {
-    Route::get(config('ssoauth.main.login_route'), 'Newtech\SSOAuth\SSOAuthController@indexLogin');
-    Route::post('/ssoauth/ajax' . config('ssoauth.main.login_route'), 'Newtech\SSOAuth\SSOAuthController@postLogin');
-    Route::post('/ssoauth/ajax/updateProjectConfiguration', 'Newtech\SSOAuth\SSOAuthController@updateProjectConfiguration');
-    Route::get(config('ssoauth.main.logout_route'), 'Newtech\SSOAuth\SSOAuthController@indexLogout');
-    Route::get('/ssoauth/pass_session_dev/{json}', 'Newtech\SSOAuth\SSOAuthController@passSessionDev');
-    Route::get('/ssoauth/pass_session', 'Newtech\SSOAuth\SSOAuthController@passSession')->name("signed.pass_session")->middleware("signed");
+    Route::get(config('ssobridge.main.login_route'), 'Newtech\SSOBridge\SSOBridgeController@indexLogin');
+    Route::post('/ssoauth/ajax' . config('ssobridge.main.login_route'), 'Newtech\SSOBridge\SSOBridgeController@postLogin');
+    Route::post('/ssoauth/ajax/updateProjectConfiguration', 'Newtech\SSOBridge\SSOBridgeController@updateProjectConfiguration');
+    Route::get(config('ssobridge.main.logout_route'), 'Newtech\SSOBridge\SSOBridgeController@indexLogout');
+    Route::get('/ssoauth/pass_session_dev/{json}', 'Newtech\SSOBridge\SSOBridgeController@passSessionDev');
+    Route::get('/ssoauth/pass_session', 'Newtech\SSOBridge\SSOBridgeController@passSession')->name("signed.pass_session")->middleware("signed");
 });
 
 

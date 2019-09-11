@@ -4,7 +4,7 @@ namespace Newtech\SSOBridge;
 
 use Illuminate\Support\ServiceProvider;
 
-class SSOAuthServiceProvider extends ServiceProvider
+class SSOBridgeServiceProvider extends ServiceProvider
 {
     /**
      * Register services.

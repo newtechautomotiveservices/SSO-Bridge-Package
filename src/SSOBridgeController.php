@@ -9,7 +9,7 @@ use Newtech\SSOBridge\Models\User;
 
 use Illuminate\Support\Facades\URL;
 
-class SSOAuthController extends Controller
+class SSOBridgeController extends Controller
 {
     public function indexLogin() {
       $curl = curl_init();
@@ -21,7 +21,7 @@ class SSOAuthController extends Controller
       }
 
       curl_setopt_array($curl, array(
-        CURLOPT_URL => config("ssoauth.main.sso_url") . "/api/ssoauth/authenticate",
+        CURLOPT_URL => config("ssobridge.main.sso_url") . "/api/ssoauth/authenticate",
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => "",
         CURLOPT_MAXREDIRS => 10,
