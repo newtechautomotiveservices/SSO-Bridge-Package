@@ -1,6 +1,6 @@
 <?php
 
-namespace Newtech\SSOAuth;
+namespace Newtech\SSOBridge;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -14,7 +14,7 @@ class SSOAuthServiceProvider extends ServiceProvider
     public function register()
     {
         // register our controller
-        $this->app->make('Newtech\SSOAuth\SSOBridgeController');
+        $this->app->make('Newtech\SSOBridge\SSOBridgeController');
         $this->loadViewsFrom(__DIR__.'/views', 'ssobridge');
         $this->publishes([
             __DIR__ . '/config' => config_path('ssobridge')
@@ -22,8 +22,8 @@ class SSOAuthServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/migrations' => $this->app->databasePath() . '/migrations'
         ], 'migrations');
-        $this->app['router']->aliasMiddleware('ssoauth' , \Newtech\SSOAuth\Middleware\SSOAuthCheck::class);
-        $this->app['router']->aliasMiddleware('ssoroutecheck' , \Newtech\SSOAuth\Middleware\SSORouteCheck::class);
+        $this->app['router']->aliasMiddleware('ssobridge' , \Newtech\SSOBridge\Middleware\SSOAuthCheck::class);
+        $this->app['router']->aliasMiddleware('ssoroutecheck' , \Newtech\SSOBridge\Middleware\SSORouteCheck::class);
     }
 
     /**

@@ -30,7 +30,7 @@ class SSOAuthCheck
 
         } else {
             $request->session()->flush();
-            return redirect(config('ssoauth.main.login_route'));
+            return redirect(config('ssobridge.main.login_route'));
         }
     }
 

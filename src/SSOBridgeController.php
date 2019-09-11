@@ -1,6 +1,6 @@
 <?php
 
-namespace Newtech\SSOAuth;
+namespace Newtech\SSOBridge;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -28,7 +28,7 @@ class SSOAuthController extends Controller
         CURLOPT_TIMEOUT => 30,
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST => "POST",
-        CURLOPT_POSTFIELDS => "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"session_url\"\r\n\r\n" . $session_url . "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"product_id\"\r\n\r\n" . config('ssoauth.main.product_id') . "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--",
+        CURLOPT_POSTFIELDS => "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"session_url\"\r\n\r\n" . $session_url . "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"product_id\"\r\n\r\n" . config('ssobridge.main.product_id') . "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--",
         CURLOPT_HTTPHEADER => array(
           "Authorization: Bearer a34e5206-0d5b-4250-a901-ddea650dcd0c",
           "Postman-Token: b54ece01-19e6-4ac7-8a4d-62fccc0aa245",
@@ -46,7 +46,7 @@ class SSOAuthController extends Controller
 
     public function indexLogout() {
         session()->flush();
-        return redirect(config('ssoauth.main.login_route'));
+        return redirect(config('ssobridge.main.login_route'));
     }
 
     public function postLogin(Request $request) {
@@ -68,11 +68,11 @@ class SSOAuthController extends Controller
             $user = User::create($request['user']);
             session()->put('_user_id', $user->id);
             session()->put('_user_token', $user->remote_token);
-            return redirect(config('ssoauth.main.home_route'));
+            return redirect(config('ssobridge.main.home_route'));
         }
         session()->put('_user_id', $user->id);
         session()->put('_user_token', $user->remote_token);
-        return redirect(config('ssoauth.main.home_route'));
+        return redirect(config('ssobridge.main.home_route'));
     }
 
     public function passSessionDev ($json) {
@@ -82,12 +82,12 @@ class SSOAuthController extends Controller
             $user->update($data);
           session()->put('_user_id', $user->id);
           session()->put('_user_token', $user->remote_token);
-          return redirect(config('ssoauth.main.home_route'));
+          return redirect(config('ssobridge.main.home_route'));
         } else {
           $userTMP = User::create($data);
           session()->put('_user_id', $userTMP->id);
           session()->put('_user_token', $userTMP->remote_token);
-          return redirect(config('ssoauth.main.home_route'));
+          return redirect(config('ssobridge.main.home_route'));
         }
     }
 }
