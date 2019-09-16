@@ -14,14 +14,14 @@ class SSOController extends Controller
       $session_url = config('app.debug') ? "debug^:" . route('api.passSession') : route('api.passSession');
       $curl = curl_init();
       curl_setopt_array($curl, array(
-        CURLOPT_URL => config("ssobridge.main.sso_url") . "/api/ssoauth/authenticate",
+        CURLOPT_URL => config("ssobridge.sso.sso_url") . "/api/ssoauth/authenticate",
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_ENCODING => "",
         CURLOPT_MAXREDIRS => 10,
         CURLOPT_TIMEOUT => 30,
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST => "POST",
-        CURLOPT_POSTFIELDS => "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"session_url\"\r\n\r\n" . $session_url . "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"product_id\"\r\n\r\n" . config('ssobridge.main.product_id') . "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--",
+        CURLOPT_POSTFIELDS => "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"session_url\"\r\n\r\n" . $session_url . "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"product_id\"\r\n\r\n" . config('ssobridge.sso.product_id') . "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--",
         CURLOPT_HTTPHEADER => array(
           "Authorization: Bearer a34e5206-0d5b-4250-a901-ddea650dcd0c",
           "Postman-Token: b54ece01-19e6-4ac7-8a4d-62fccc0aa245",
@@ -40,7 +40,7 @@ class SSOController extends Controller
 
   public function indexLogout() {
     session()->flush();
-    return redirect(config('ssobridge.main.login_route'));
+    return redirect(config('ssobridge.sso.login_route'));
   }
 
 
@@ -59,11 +59,11 @@ class SSOController extends Controller
         $user = User::create($request['user']);
         session()->put('_user_id', $user->id);
         session()->put('_user_token', $user->remote_token);
-        return redirect(config('ssobridge.main.home_route'));
+        return redirect(config('ssobridge.sso.home_route'));
     }
     session()->put('_user_id', $user->id);
     session()->put('_user_token', $user->remote_token);
-    return redirect(config('ssobridge.main.home_route'));
+    return redirect(config('ssobridge.sso.home_route'));
   }
 
   public function pass_user_dev ($json) {
@@ -73,12 +73,12 @@ class SSOController extends Controller
         $user->update($data);
       session()->put('_user_id', $user->id);
       session()->put('_user_token', $user->remote_token);
-      return redirect(config('ssobridge.main.home_route'));
+      return redirect(config('ssobridge.sso.home_route'));
     } else {
       $userTMP = User::create($data);
       session()->put('_user_id', $userTMP->id);
       session()->put('_user_token', $userTMP->remote_token);
-      return redirect(config('ssobridge.main.home_route'));
+      return redirect(config('ssobridge.sso.home_route'));
     }
   }
 }

@@ -26,7 +26,7 @@ class SSORouteCheck
             }
         } else {
             $request->session()->flush();
-            return redirect(config('ssobridge.main.login_route'));
+            return redirect(config('ssobridge.sso.login_route'));
         }
     }
 }

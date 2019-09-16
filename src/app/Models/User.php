@@ -37,14 +37,14 @@ class User extends Model
         $curl = curl_init();
 
         curl_setopt_array($curl, array(
-          CURLOPT_URL => config('ssobridge.main.sso_url') . "/api/ssoauth/authenticate",
+          CURLOPT_URL => config('ssobridge.sso.sso_url') . "/api/ssoauth/authenticate",
           CURLOPT_RETURNTRANSFER => true,
           CURLOPT_ENCODING => "",
           CURLOPT_MAXREDIRS => 10,
           CURLOPT_TIMEOUT => 30,
           CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
           CURLOPT_CUSTOMREQUEST => "POST",
-          CURLOPT_POSTFIELDS => "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"email\"\r\n\r\n" . $email . "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"password\"\r\n\r\n" . $password . "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"product_id\"\r\n\r\n" . config('ssobridge.main.product_id') . "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--",
+          CURLOPT_POSTFIELDS => "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"email\"\r\n\r\n" . $email . "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"password\"\r\n\r\n" . $password . "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"product_id\"\r\n\r\n" . config('ssobridge.sso.product_id') . "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--",
           CURLOPT_HTTPHEADER => array(
             "Authorization: Bearer a34e5206-0d5b-4250-a901-ddea650dcd0c",
             "Postman-Token: e3c15764-c8a9-4f63-956e-46dd3b51cb9e",
