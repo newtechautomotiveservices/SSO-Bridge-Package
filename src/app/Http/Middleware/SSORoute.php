@@ -1,6 +1,6 @@
 <?php
 
-namespace Newtech\SSOAuth\Middleware;
+namespace Newtech\SSOBridge\Middleware;
 
 use Closure;
 

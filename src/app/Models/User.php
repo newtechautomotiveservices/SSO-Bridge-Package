@@ -75,6 +75,19 @@ class User extends Model
         }
     }
 
+    public static function verify ($token, $user_id) {
+        $user = User::find($user_id);
+        if($user) {
+            if($token == $user->remote_token) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
+    }
+
 
     /* ----------------- MUTATIONS ----------------- */
     public function getActiveStoreAttribute() {
@@ -112,18 +125,5 @@ class User extends Model
             }
         }
         return false;
-    }
-
-    public static function verify ($token, $user_id) {
-        $user = User::find($user_id);
-        if($user) {
-            if($token == $user->remote_token) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return false;
-        }
     }
 }
