@@ -1,9 +1,11 @@
 <?php
 
-namespace Newtech\SSOBridge;
+namespace Newtech\SSOBridge\App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+
+use Newtech\SSOBridge\App\Models\User;
 
 class SSOController extends Controller
 {
@@ -45,13 +47,13 @@ class SSOController extends Controller
 
 
   // Ajax & Posts
-  public function pass_session(Request $request) {
+  public function request_pass_session(Request $request) {
     return URL::temporarySignedRoute(
         'signed.pass_session', now()->addMinutes(30), ['user' => $request['user']]
     );
   }
 
-  public function pass_user (Request $request) {
+  public function pass_session (Request $request) {
     $user = User::find($request["user"]["id"]);
     if($user) {
         $user->update($request['user']);
@@ -66,7 +68,7 @@ class SSOController extends Controller
     return redirect(config('ssobridge.sso.home_route'));
   }
 
-  public function pass_user_dev ($json) {
+  public function pass_session_dev ($json) {
     $data = json_decode(base64_decode($json), true);
     $user = User::find($data["id"]);
     if($user) {

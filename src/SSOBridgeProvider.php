@@ -19,11 +19,11 @@ class SSOBridgeProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->make('Newtech\SSOBridge\App\Controllers\SSOController');
+        $this->app->make('Newtech\SSOBridge\App\Http\Controllers\SSOController');
         $this->publishes([__DIR__ . '/config' => config_path('ssobridge')], 'config');
 
         $this->publishes([
-            __DIR__ . '/migrations' => $this->app->databasePath() . '/migrations'
+            __DIR__ . '/database/migrations' => $this->app->databasePath() . '/migrations'
         ], 'migrations');
 
         $this->app['router']->aliasMiddleware('ssobridge' , \Newtech\SSOBridge\App\Http\Middleware\SSOAuth::class);

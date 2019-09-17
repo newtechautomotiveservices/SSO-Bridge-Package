@@ -1,12 +1,12 @@
 <?php
 
-namespace Newtech\SSOBridge\Middleware;
+namespace Newtech\SSOBridge\App\Http\Middleware;
 
 use Closure;
 
-use Newtech\SSOBridge\Models\User;
+use Newtech\SSOBridge\App\Models\User;
 
-class SSORouteCheck
+class SSORoute
 {
     /**
      * Handle an incoming request.
