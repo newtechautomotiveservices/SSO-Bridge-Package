@@ -126,4 +126,8 @@ class User extends Model
         }
         return false;
     }
+
+    public function getStoresAttribute($value) {
+        return json_decode($this->guards)->stores;
+    }
 }
