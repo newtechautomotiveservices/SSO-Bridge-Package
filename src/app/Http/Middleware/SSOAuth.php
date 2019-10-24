@@ -3,7 +3,6 @@
 namespace Newtech\SSOBridge\App\Http\Middleware;
 
 use Closure;
-
 use Newtech\SSOBridge\App\Models\User;
 
 class SSOAuth
@@ -17,12 +16,12 @@ class SSOAuth
      */
     public function handle($request, Closure $next)
     {
-        $token = $request->session()->get('_user_token');
+        $token   = $request->session()->get('_user_token');
         $user_id = $request->session()->get('_user_id');
-        $verify = User::verify($token, $user_id);
-        if($verify) {
+        $verify  = User::verify($token, $user_id);
+        if ($verify) {
             $user = User::find($user_id);
-            if($user->can("access site")) {
+            if ($user->can("access site")) {
                 return $next($request);
             } else {
                 abort(403, 'You dont have access to this site.');
@@ -34,7 +33,8 @@ class SSOAuth
         }
     }
 
-    private function checkToken($request) {
+    private function checkToken($request)
+    {
 
     }
 }
