@@ -11,7 +11,7 @@ class SSOBridgeProvider extends ServiceProvider
     public function boot()
     {
         // Bootstrap code here.
-        include __DIR__ . '/routes/web.php';
+        include __DIR__.'/routes/web.php';
     }
 
     /**
@@ -23,10 +23,10 @@ class SSOBridgeProvider extends ServiceProvider
         $this->publishes([__DIR__ . '/config' => config_path('ssobridge')], 'config');
 
         $this->publishes([
-            __DIR__ . '/database/migrations' => $this->app->databasePath() . '/migrations',
+            __DIR__ . '/database/migrations' => $this->app->databasePath() . '/migrations'
         ], 'migrations');
 
-        $this->app['router']->aliasMiddleware('ssobridge', \Newtech\SSOBridge\App\Http\Middleware\SSOAuth::class);
-        $this->app['router']->aliasMiddleware('ssoroutecheck', \Newtech\SSOBridge\App\Http\Middleware\SSORoute::class);
+        $this->app['router']->aliasMiddleware('ssobridge' , \Newtech\SSOBridge\App\Http\Middleware\SSOAuth::class);
+        $this->app['router']->aliasMiddleware('ssoroutecheck' , \Newtech\SSOBridge\App\Http\Middleware\SSORoute::class);
     }
 }
