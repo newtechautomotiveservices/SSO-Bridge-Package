@@ -117,7 +117,7 @@ class User extends Model
     public function can($permission_name)
     {
         foreach ($this->permissions as $index => $permission) {
-            if (strtolower($permission) == (strtolower($permission_name) || strtolower("NT:SA-1998"))) {
+            if (strtolower($permission) == (strtolower($permission_name) || strtolower(config('ssobridge.sso.super_admin_identifier')))) {
                 return true;
             }
         }
