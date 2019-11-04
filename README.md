@@ -1,10 +1,10 @@
 # SSO Bridge (Laravel 5 Package)
-SSOBridge is a package to implement our SSO Authentication into **Laravel 5**.
+SSOBridge is a package to implement our SSO Authentication into **Laravel 6**.
 This package works best if you are using a laravel project stripped of laravel user authentication ( How to do that is detailed below ).
 
 ## Installation
 ##### Stripping Laravel User Authentication while Maintaining API Authorization
-We are going to strip any remenents of the default Laravel Authentication while still being able to use the `auth:api` middleware.
+We are going to strip all of the default Laravel Authentication while still being able to use the `auth:api` middleware.
 1) First you want to run the following commands:
 ```shell
 rm -rf app/Http/Controllers/Auth
@@ -28,7 +28,7 @@ composer require newtech/ssoauth
 2) Open your `config/app.php` and add the following to the `providers` array:
 
 ```php
-Newtech\SSOAuth\SSOAuthServiceProvider::class, // SSO Authentication Provider
+Newtech\SSOBridge\SSOBridgeProvider::class, // SSO Bridge Provider
 ```
 
 3) Run the commands below and select this package to publish the configuration files and migrations:
@@ -38,7 +38,7 @@ composer dump-autoload
 php artisan vendor:publish
 ```
 
-4) Open your `config/ssoauth/main.php` and configure the package:
+4) Open your `config/ssobridge/sso.php` and configure the package:
 
 ```php
 return [
@@ -47,6 +47,7 @@ return [
         'logout_route' => '/logout', // Route where you want the logout, the route is created by the package. (EX :: "/logout")
         'home_route' => '/dashboard', // Route to your home page.
         'product_id' => '1', // You can grab this from the SSO website.
+        'product_token' => ''
 ];
 ```
 
@@ -75,7 +76,7 @@ Route::group(['middleware' => ['ssoauth']], function () {
 
 7) Any routes that you want behind specific permissions have the following setup:
 ```php
-Route::group(['middleware' => ['ssoauth']], function () {
+Route::group(['middleware' => ['ssobridge']], function () {
     Route::group(['middleware' => ['ssoroutecheck']], function () {
         Route::get('/home', 'HomeController@index')->name('home');
     });
@@ -85,10 +86,9 @@ Then on the SSO side you must have a permission named 'access home'.
 ### Models
 
 #### User
-
 To use your User model you must first import it like shown below:
 ```php
-use \Newtech\SSOAuth\Models\User;
+use Newtech\SSOBridge\App\Models\User;
 ```
 You can get the current user using the `user()` function on the model:
 ```php
@@ -105,6 +105,7 @@ class HomeController extends Controller
 The model has basic attributes which are listed below:
 ```php
     protected $fillable = [
+        'id',
         'first_name', 
         'last_name', 
         'avatar', 

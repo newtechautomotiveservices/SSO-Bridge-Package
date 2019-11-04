@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 
 use Newtech\SSOBridge\App\Models\User;
 
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Client;
+
 class SSOController extends Controller
 {
   // Login Page
@@ -14,27 +17,20 @@ class SSOController extends Controller
     // Try Catch to detect if the project is set up properly.
     try {
       $session_url = config('app.debug') ? "debug^:" . route('api.passSession') : route('api.passSession');
-      $curl = curl_init();
-      curl_setopt_array($curl, array(
-        CURLOPT_URL => config("ssobridge.sso.sso_url") . "/api/ssoauth/authenticate",
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => "",
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 30,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => "POST",
-        CURLOPT_POSTFIELDS => "------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"session_url\"\r\n\r\n" . $session_url . "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW\r\nContent-Disposition: form-data; name=\"product_id\"\r\n\r\n" . config('ssobridge.sso.product_id') . "\r\n------WebKitFormBoundary7MA4YWxkTrZu0gW--",
-        CURLOPT_HTTPHEADER => array(
-          "Authorization: Bearer a34e5206-0d5b-4250-a901-ddea650dcd0c",
-          "Postman-Token: b54ece01-19e6-4ac7-8a4d-62fccc0aa245",
-          "cache-control: no-cache",
-          "content-type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW"
-        ),
-      ));
-      $response = curl_exec($curl);
-      $err = curl_error($curl);
-      curl_close($curl);
-      return redirect($response);
+
+      $client = new Client();
+      $request = $client->post("https://ssodev.newtechautomotiveservices.com/api/ssoauth/authenticate", [
+          'form_params' => [
+              'session_url' => $session_url,
+              'product_id' => config('ssobridge.sso.product_id'),
+              'product_token' => config('ssobridge.sso.product_token')
+          ]
+      ]);
+      $result = json_decode($request->getBody()->getContents());
+      if($result->status == "failure") {
+        return $result->message;
+      }
+      return redirect($result->url);
     } catch (Exception $e) {
       return "Project not set up properly";
     }
