@@ -16,21 +16,20 @@ class SSOController extends Controller
   public function indexLogin() {
     // Try Catch to detect if the project is set up properly.
     try {
-      $session_url = config('app.debug') ? "debug^:" . route('api.passSession') : route('api.passSession');
-
+      $session_url = config('app.debug') ? "DEBUG::" . route('api.passSession.dev') : route('api.passSession');
       $client = new Client();
-      $request = $client->post("https://ssodev.newtechautomotiveservices.com/api/ssoauth/authenticate", [
+      $request = $client->post(config('ssobridge.sso.authentication_url') . "api/ssoauth/authenticate", [
           'form_params' => [
               'session_url' => $session_url,
-              'product_id' => config('ssobridge.sso.product_id'),
-              'product_token' => config('ssobridge.sso.product_token')
+              'application_id' => config('ssobridge.sso.application_id'),
+              'application_token' => config('ssobridge.sso.application_token')
           ]
       ]);
       $result = json_decode($request->getBody()->getContents());
       if($result->status == "failure") {
         return $result->message;
       }
-      return redirect($result->url);
+      return redirect($result->data->url);
     } catch (Exception $e) {
       return "Project not set up properly";
     }
@@ -41,26 +40,20 @@ class SSOController extends Controller
     return redirect(config('ssobridge.sso.login_route'));
   }
 
-
-  // Ajax & Posts
-  public function request_pass_session(Request $request) {
-    return URL::temporarySignedRoute(
-        'signed.pass_session', now()->addMinutes(30), ['user' => $request['user']]
-    );
-  }
-
   public function pass_session (Request $request) {
     $user = User::find($request["user"]["id"]);
     if($user) {
         $user->update($request['user']);
     } else {
         $user = User::create($request['user']);
-        session()->put('_user_id', $user->id);
-        session()->put('_user_token', $user->remote_token);
+        $request->session()->put([
+          "_identifier(" . config('ssobridge.sso.application_id') . ")" => $user->id,
+          "_session_token(" . config('ssobridge.sso.application_id') . ")" => $user->session->token
+        ]);
         return redirect(config('ssobridge.sso.home_route'));
     }
-    session()->put('_user_id', $user->id);
-    session()->put('_user_token', $user->remote_token);
+    session()->put("_identifier(" . config('ssobridge.sso.application_id') . ")", $user->id);
+    session()->put("_session_token(" . config('ssobridge.sso.application_id') . ")", $user->session->token);
     return redirect(config('ssobridge.sso.home_route'));
   }
 
@@ -68,14 +61,14 @@ class SSOController extends Controller
     $data = json_decode(base64_decode($json), true);
     $user = User::find($data["id"]);
     if($user) {
-        $user->update($data);
-      session()->put('_user_id', $user->id);
-      session()->put('_user_token', $user->remote_token);
+      $user->update($data);
+      session()->put("_identifier(" . config('ssobridge.sso.application_id') . ")", $user->id);
+      session()->put("_session_token(" . config('ssobridge.sso.application_id') . ")", $user->session->token);
       return redirect(config('ssobridge.sso.home_route'));
     } else {
       $userTMP = User::create($data);
-      session()->put('_user_id', $userTMP->id);
-      session()->put('_user_token', $userTMP->remote_token);
+      session()->put("_identifier(" . config('ssobridge.sso.application_id') . ")", $userTMP->id);
+      session()->put("_session_token(" . config('ssobridge.sso.application_id') . ")", $user->session->token);
       return redirect(config('ssobridge.sso.home_route'));
     }
   }
