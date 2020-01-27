@@ -4,6 +4,7 @@ namespace Newtech\SSOBridge\App\Http\Middleware;
 
 use Closure;
 use Newtech\SSOBridge\App\Models\User;
+use Illuminate\Http\Response;
 
 class SSOAuth
 {
@@ -28,7 +29,7 @@ class SSOAuth
                     "_identifier(" . config('ssobridge.sso.application_id') . ")" => $authenticated['data']['id'],
                     "_session_token(" . config('ssobridge.sso.application_id') . ")" => $authenticated['data']['token']
                 ]);
-                if ($user->can("default::access_site")) {
+                if (User::user()->can("default::access_site")) {
                     if($route_name == "sso.auth.login") {
                         return redirect(config('ssobridge.sso.home_route'));
                     }

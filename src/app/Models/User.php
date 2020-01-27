@@ -13,7 +13,7 @@ class User extends Model
     protected $table = 'sso_users';
 
     protected $fillable = [
-        'remote_id', 'token', 'first_name', 'last_name', 'email', 'store_number', 'guards'
+        'remote_id', 'token', 'first_name', 'last_name', 'email', 'store_number', 'roles', 'permissions', 'stores'
     ];
 
     protected $dates = [
@@ -29,11 +29,19 @@ class User extends Model
         return User::where('remote_id', '=', $user_id)->where('token', '=', $user_token)->first();
     }
 
+    public function can($permission) {
+        if(User::user()->permissions->where('identifier', '=', $permission)->first()) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public static function user_authenticate_session($data)
     {
         $identifier = $data['identifier'];
         $session_token = $data['session_token'];
-        $user = User::where('remote_id', '=', $identifier)->where('token', '=', $user_token)->first();
+        $user = User::where('remote_id', '=', $identifier)->where('token', '=', $session_token)->first();
         // Check if the id matches a users identifier.
         if($user && $user->token == $session_token) {
             return [
@@ -48,17 +56,30 @@ class User extends Model
         }
     }
 
+    public function getPermissionsAttribute($value)
+    {
+        return collect(json_decode($value, true));
+    }
+    public function getRolesAttribute($value)
+    {
+        return collect(json_decode($value, true));
+    }
+
     /* ----------------- MUTATIONS ----------------- */
-    // public function getActiveStoreAttribute()
-    // {
-    //     $active_store = $this->guards['stores'];
-    //     foreach ($active_store as $index => $active_store) {
-    //         if ($active_store['store_number'] == $this->store_number) {
-    //             return $active_store;
-    //         }
-    //     }
-    //     return false;
-    // }
+    public function getActiveStoreAttribute()
+    {
+        $active_store = $this->guards['stores'];
+        foreach ($active_store as $index => $active_store) {
+            if ($active_store['store_number'] == $this->store_number) {
+                return $active_store;
+            }
+        }
+        return false;
+    }
+    public function getStoresAttribute($value)
+    {
+        return collect(json_decode($value, true));
+    }
 
     // public function getNameAttribute($value)
     // {
