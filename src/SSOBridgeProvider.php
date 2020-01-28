@@ -2,6 +2,7 @@
 namespace Newtech\SSOBridge;
 
 use Illuminate\Support\ServiceProvider;
+use Newtech\SSOBridge\App\Console\Commands\SSOSetup;
 
 class SSOBridgeProvider extends ServiceProvider
 {
@@ -12,11 +13,9 @@ class SSOBridgeProvider extends ServiceProvider
     {
         // Bootstrap code here.
         include __DIR__.'/routes/web.php';
-        if ($this->app->runningInConsole()) {
-            $this->commands([
-                \Newtech\SSOBridge\App\Console\Commands\SSOSetup::class,
-            ]);
-        }
+        $this->commands([
+            SSOSetup::class
+        ]);
     }
 
     /**
