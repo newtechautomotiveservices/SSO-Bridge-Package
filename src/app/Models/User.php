@@ -24,8 +24,8 @@ class User extends Model
 
     public static function user()
     {
-        $user_id = session()->get("_identifier(" . config('ssobridge.sso.application_id') . ")");
-        $user_token = session()->get("_session_token(" . config('ssobridge.sso.application_id') . ")");
+        $user_id = session()->get("_identifier(" . config('ssobridge.sso.application.id') . ")");
+        $user_token = session()->get("_session_token(" . config('ssobridge.sso.application.id') . ")");
         return User::where('remote_id', '=', $user_id)->where('token', '=', $user_token)->first();
     }
 

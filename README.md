@@ -3,12 +3,14 @@ SSOBridge is a package to implement our SSO Authentication into **Laravel 6**.
 This package works best if you are using a laravel project stripped of laravel user authentication ( How to do that is detailed below ).
 
 ## Installation
-##### Stripping Laravel User Authentication while Maintaining API Authorization
+##### Stripping Laravel User Authentication
 We are going to strip all of the default Laravel Authentication while still being able to use the `auth:api` middleware.
 1) First you want to run the following commands:
 ```shell
 rm -rf app/Http/Controllers/Auth
 rm resources/lang/en/{passwords.php}
+rm database/migrations/{2014_10_12_000000_create_users_table.php,2014_10_12_100000_create_password_resets_table.php}
+rm database/factories/{UserFactory.php}
 rm app/Http/Middleware/{Authenticate.php,RedirectIfAuthenticated.php}
 sed -i '/auth/d; /guest/d' app/Http/Kernel.php
 ```
