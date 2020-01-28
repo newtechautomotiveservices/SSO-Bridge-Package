@@ -10,14 +10,15 @@ class SSOAuthUsersTable extends Migration
     {
         Schema::create('sso_users', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->integer('remote_id');
+            $table->string('token');
             $table->string('first_name');
             $table->string('last_name');
-            $table->string('avatar');
             $table->string('email');
-            $table->json('known_logins')->nullable();
-            $table->string('remote_token')->nullable();
-            $table->string('store_number');
-            $table->json('guards');
+            $table->string('store_number')->default("");
+            $table->longText('roles');
+            $table->longText('permissions');
+            $table->longText('stores');
             $table->timestamps();
         });
     }

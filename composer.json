@@ -10,7 +10,9 @@
             "role": "Developer"
         }
     ],
-    "require": {},
+    "require": {
+        "guzzlehttp/guzzle": "*"
+    },
     "autoload": {
         "psr-0": {
             "Newtech\\SSOBridge\\": "src/"
