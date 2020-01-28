@@ -12,6 +12,11 @@ class SSOBridgeProvider extends ServiceProvider
     {
         // Bootstrap code here.
         include __DIR__.'/routes/web.php';
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                \Newtech\SSOBridge\App\Console\Commands\SSOSetup::class,
+            ]);
+        }
     }
 
     /**
@@ -19,9 +24,6 @@ class SSOBridgeProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->commands([
-            \Newtech\SSOBridge\App\Console\Commands\SSOSetup::class,
-        ]);
         $this->app->make('Newtech\SSOBridge\App\Http\Controllers\SSOController');
         $this->publishes([__DIR__ . '/config' => config_path('ssobridge')], 'config');
 
