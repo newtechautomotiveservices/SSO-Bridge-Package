@@ -100,6 +100,8 @@ class SSOSetup extends Command
     }
 
     public function dialogue_autoConfigure() {
+      exec("php artisan vendor:publish --provider='Newtech\SSOBridge\SSOBridgeProvider'");
+      $this->info("Vendor has been published.");
       // -- Environment
       $this->data['environment'] = $this->choice('What environment of SSO do you want this setup in?', ['dev', 'test', 'prod']);
       switch ($this->data['environment']) {
@@ -207,6 +209,7 @@ class SSOSetup extends Command
 
     public function dialogue_removeAuthentication() {
       $this->info('===================================================');
+      exec("rm app/User.php");
       exec("rm database/migrations/2014_10_12_000000_create_users_table.php");
       exec("rm database/migrations/2014_10_12_100000_create_password_resets_table.php");
       $this->info("Removed the default migrations.");
