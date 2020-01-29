@@ -6,14 +6,16 @@ use Newtech\SSOBridge\App\Console\Commands\SSOSetup;
 
 class SSOBridgeProvider extends ServiceProvider
 {
-    protected $commands = [
-        'Newtech\SSOBridge\App\Console\Commands\SSOSetup'
-    ];
     /**
      * Bootstrap the application services.
      */
     public function boot()
     {
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                SSOSetup::class
+            ]);
+        }
         // Bootstrap code here.
         include __DIR__.'/routes/web.php';
     }
@@ -23,7 +25,6 @@ class SSOBridgeProvider extends ServiceProvider
      */
     public function register()
     {
-
         $this->app->make('Newtech\SSOBridge\App\Http\Controllers\SSOController');
         $this->publishes([__DIR__ . '/config' => config_path('ssobridge')], 'config');
 
@@ -33,6 +34,5 @@ class SSOBridgeProvider extends ServiceProvider
 
         $this->app['router']->aliasMiddleware('ssobridge' , \Newtech\SSOBridge\App\Http\Middleware\SSOAuth::class);
         $this->app['router']->aliasMiddleware('ssoroutecheck' , \Newtech\SSOBridge\App\Http\Middleware\SSORoute::class);
-        $this->commands($this->commands);
     }
 }

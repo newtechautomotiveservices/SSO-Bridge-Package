@@ -81,35 +81,8 @@ class User extends Model
         return collect(json_decode($value, true));
     }
 
-    // public function getNameAttribute($value)
-    // {
-    //     return ucfirst($this->first_name) . ' ' . ucfirst($this->last_name);
-    // }
-
-    // public function getPermissionsAttribute($value)
-    // {
-    //     $permissions = json_decode($this->guards)->permissions;
-    //     return $permissions;
-    // }
-
-    // public function getRolesAttribute($value)
-    // {
-    //     $roles = json_decode($this->guards)->roles;
-    //     return $roles;
-    // }
-
-    // public function can($permission_name)
-    // {
-    //     foreach ($this->permissions as $index => $permission) {
-    //         if (strtolower($permission) == (strtolower($permission_name) || strtolower(config('ssobridge.sso.super_admin_identifier')))) {
-    //             return true;
-    //         }
-    //     }
-    //     return false;
-    // }
-
-    // public function getStoresAttribute($value)
-    // {
-    //     return json_decode($this->guards)->stores;
-    // }
+    public function getNameAttribute($value)
+    {
+        return ucfirst($this->first_name) . ' ' . ucfirst($this->last_name);
+    }
 }

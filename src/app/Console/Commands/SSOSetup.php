@@ -207,6 +207,9 @@ class SSOSetup extends Command
 
     public function dialogue_removeAuthentication() {
       $this->info('===================================================');
+      exec("rm database/migrations/2014_10_12_000000_create_users_table.php");
+      exec("rm database/migrations/2014_10_12_100000_create_password_resets_table.php");
+      $this->info("Removed the default migrations.");
       exec("rm -rf app/Http/Controllers/Auth");
       $this->info("Removed the auth controllers.");
       exec("rm resources/lang/en/{passwords.php}");
