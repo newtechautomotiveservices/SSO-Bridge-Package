@@ -38,7 +38,7 @@ class SSOController extends Controller
 
   public function indexLogout() {
     session()->flush();
-    return redirect(config('ssobridge.sso.login_route'));
+    return redirect(config('ssobridge.sso.application.login_route'));
   }
 
   public function pass_session (Request $request) {
@@ -52,7 +52,7 @@ class SSOController extends Controller
       "_identifier(" . config('ssobridge.sso.application.id') . ")" => $request['user']['remote_id'],
       "_session_token(" . config('ssobridge.sso.application.id') . ")" => $request['user']['token']
     ]);
-    return redirect(config('ssobridge.sso.home_route'));
+    return redirect(config('ssobridge.sso.application.home_route'));
   }
 
   public function pass_session_dev (Request $request, $json) {
@@ -67,6 +67,6 @@ class SSOController extends Controller
       "_identifier(" . config('ssobridge.sso.application.id') . ")" => $json['remote_id'],
       "_session_token(" . config('ssobridge.sso.application.id') . ")" => $json['token']
     ]);
-    return redirect(config('ssobridge.sso.home_route'));
+    return redirect(config('ssobridge.sso.application.home_route'));
   }
 }

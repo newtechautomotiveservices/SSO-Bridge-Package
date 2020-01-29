@@ -31,7 +31,7 @@ class SSOAuth
                 ]);
                 if (User::user()->can("default::access_site")) {
                     if($route_name == "sso.auth.login") {
-                        return redirect(config('ssobridge.sso.home_route'));
+                        return redirect(config('ssobridge.sso.application.home_route'));
                     }
                     return $next($request);
                 } else {
@@ -43,6 +43,6 @@ class SSOAuth
             return $next($request);
         }
         $request->session()->flush();
-        return redirect(config('ssobridge.sso.logout_route'));
+        return redirect(config('ssobridge.sso.application.logout_route'));
     }
 }
