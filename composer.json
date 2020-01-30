@@ -17,5 +17,12 @@
         "psr-0": {
             "Newtech\\SSOBridge\\": "src/"
         }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Newtech\\SSOBridge\\SSOBridgeProvider"
+            ]
+        }
     }
 }

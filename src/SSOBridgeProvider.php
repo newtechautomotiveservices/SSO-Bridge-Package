@@ -25,6 +25,7 @@ class SSOBridgeProvider extends ServiceProvider
      */
     public function register()
     {
+
         $this->app->make('Newtech\SSOBridge\App\Http\Controllers\SSOController');
         $this->publishes([__DIR__ . '/config' => config_path('ssobridge')], 'config');
 
