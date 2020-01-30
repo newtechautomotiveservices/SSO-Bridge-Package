@@ -5,7 +5,7 @@
 > This package is required to be able to use the Single Sign On in your applications.
 
 ## Installation
->1) Go setup your SSH keys for our github organization as detailed in `FILESERVER:\Processes_and_Procedures\Installing Laravel Packages.docx`
+1) Go setup your SSH keys for our github organization as detailed in `FILESERVER:\Processes_and_Procedures\Installing Laravel Packages.docx`
 2) Next you must add the repository to your composer.json as shown below.
 ```json
 "repositories": {
