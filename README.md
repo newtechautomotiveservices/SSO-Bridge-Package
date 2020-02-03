@@ -22,7 +22,7 @@
 	    "newtech/ssobridge": "dev-master"
 	},
 ```
-4) Once that is installed if you are on Laravel 6.x, then you can skip this step. Add the Service Provider to 'providers' in your app.php as shown below.
+4) Add the Service Provider to 'providers' in your app.php as shown below.
 ```php
 	'providers' => [
 		...
