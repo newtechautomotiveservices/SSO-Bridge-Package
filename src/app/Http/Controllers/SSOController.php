@@ -48,6 +48,12 @@ class SSOController extends Controller
     } else {
         $user = User::create($request['user']);
     }
+
+    $url = \URL::temporarySignedRoute('signed.remote.putSession', now()->addMinutes(60), [
+      "id" => $request['user']['remote_id'],
+      "token" => $request['user']['token']
+    ]);
+
     return [
       "status" => "success",
       "data" => [
@@ -67,6 +73,14 @@ class SSOController extends Controller
     $request->session()->put([
       "_identifier(" . config('ssobridge.sso.application.id') . ")" => $json['remote_id'],
       "_session_token(" . config('ssobridge.sso.application.id') . ")" => $json['token']
+    ]);
+    return redirect(config('ssobridge.sso.application.home_route'));
+  }
+
+  public function putSession (Request $request) {
+    $request->session()->put([
+      "_identifier(" . config('ssobridge.sso.application.id') . ")" => $request['id'],
+      "_session_token(" . config('ssobridge.sso.application.id') . ")" => $request['token']
     ]);
     return redirect(config('ssobridge.sso.application.home_route'));
   }
