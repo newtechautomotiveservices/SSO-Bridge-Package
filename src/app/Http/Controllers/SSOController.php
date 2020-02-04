@@ -16,7 +16,7 @@ class SSOController extends Controller
   public function indexLogin() {
     // Try Catch to detect if the project is set up properly.
     try {
-      $session_url = config('app.debug') ? "DEBUG::" . route('api.passSession.dev', "") : secure_url(route('api.passSession'));
+      $session_url = config('app.debug') ? "DEBUG::" . route('api.passSession.dev', "") : route('api.passSession');
       $client = new Client();
       $request = $client->post(config('ssobridge.sso.authentication_url') . "api/remote/user/requestAuthRoute", [
           'form_params' => [
