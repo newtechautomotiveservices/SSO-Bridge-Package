@@ -48,7 +48,12 @@ class SSOController extends Controller
     } else {
         $user = User::create($request['user']);
     }
-    return redirect(config('ssobridge.sso.application.home_route'));
+    return [
+      "status" => "success",
+      "data" => [
+        "url" => route(config('ssobridge.sso.application.home_route'))
+      ]
+    ];
   }
 
   public function pass_session_dev (Request $request, $json) {
@@ -63,11 +68,6 @@ class SSOController extends Controller
       "_identifier(" . config('ssobridge.sso.application.id') . ")" => $json['remote_id'],
       "_session_token(" . config('ssobridge.sso.application.id') . ")" => $json['token']
     ]);
-    return [
-      "status" => "success",
-      "data" => [
-        "url" => route(config('ssobridge.sso.application.home_route'))
-      ]
-    ];
+    return redirect(config('ssobridge.sso.application.home_route'));
   }
 }
