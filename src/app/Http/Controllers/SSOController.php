@@ -51,7 +51,7 @@ class SSOController extends Controller
     return [
       "status" => "success",
       "data" => [
-        "url" => route(config('ssobridge.sso.application.home_route'))
+        "url" => url(config('ssobridge.sso.application.home_route'))
       ]
     ];
   }
