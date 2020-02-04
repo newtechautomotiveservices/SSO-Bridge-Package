@@ -57,9 +57,7 @@ class SSOController extends Controller
     return [
       "status" => "success",
       "data" => [
-        "url" => url(config('ssobridge.sso.application.home_route')),
-          "_identifier(" . config('ssobridge.sso.application.id') . ")" => $json['remote_id'],
-          "_session_token(" . config('ssobridge.sso.application.id') . ")" => $json['token']
+        "url" => url(config('ssobridge.sso.application.home_route'))
       ]
     ];
   }
