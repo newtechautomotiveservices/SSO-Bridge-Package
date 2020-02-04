@@ -16,7 +16,7 @@ class SSOController extends Controller
   public function indexLogin() {
     // Try Catch to detect if the project is set up properly.
     try {
-      $session_url = config('app.debug') ? "DEBUG::" . route('api.passSession.dev', "") : route('api.passSession');
+      $session_url = config('app.debug') ? "DEBUG::" . route('api.passSession.dev', "") : secure_url(route('api.passSession'));
       $client = new Client();
       $request = $client->post(config('ssobridge.sso.authentication_url') . "api/remote/user/requestAuthRoute", [
           'form_params' => [
@@ -48,10 +48,6 @@ class SSOController extends Controller
     } else {
         $user = User::create($request['user']);
     }
-    $request->session()->put([
-      "_identifier(" . config('ssobridge.sso.application.id') . ")" => $request['user']['remote_id'],
-      "_session_token(" . config('ssobridge.sso.application.id') . ")" => $request['user']['token']
-    ]);
     return redirect(config('ssobridge.sso.application.home_route'));
   }
 
