@@ -2,6 +2,7 @@
 
 namespace Newtech\SSOBridge\App\Models;
 
+use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Model;
 use Session;
 
@@ -10,23 +11,17 @@ use Session;
 
 class User extends Model
 {
-    protected $table = 'sso_users';
 
     protected $fillable = [
-        'remote_id', 'token', 'first_name', 'last_name', 'email', 'store_number', 'roles', 'permissions', 'stores'
-    ];
-
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'deleted_at',
+        'id', 'first_name', 'last_name', 'email', 'store_number', 'permissions', 'stores'
     ];
 
     public static function user()
     {
-        $user_id = session()->get("_identifier(" . config('ssobridge.sso.application.id') . ")");
-        $user_token = session()->get("_session_token(" . config('ssobridge.sso.application.id') . ")");
-        return User::where('remote_id', '=', $user_id)->where('token', '=', $user_token)->first();
+
+        $array = collect(Session::get('sso-jwt-array'))->toArray();
+        $user = new User($array);
+        return $user;
     }
 
     public function can($permission) {
@@ -37,22 +32,22 @@ class User extends Model
         }
     }
 
-    public static function user_authenticate_session($data)
+    public static function authenticate_session($data)
     {
-        $identifier = $data['identifier'];
-        $session_token = $data['session_token'];
-        $user = User::where('remote_id', '=', $identifier)->where('token', '=', $session_token)->first();
-        // Check if the id matches a users identifier.
-        if($user && $user->token == $session_token) {
-            return [
-                'status' => 'success',
-                'data' => $user->toArray()
-            ];
-        } else {
-            return [
-                'status' => 'failure',
-                'code' => 'invalid_session'
-            ];
+        $jwt = session()->get('sso-jwt');
+        // Try Catch to detect if the project is set up properly.
+        try {
+            $session_url = url('/');
+            $client = new Client();
+            $request = $client->get(config('ssobridge.sso.authentication_url') . "api/remote/user/checkJWT/" . config('ssobridge.sso.application.id') . "/" . $jwt);
+            $result = json_decode($request->getBody()->getContents());
+            if($result->status == "failure") {
+                dd($result);
+                return $result->message;
+            }
+            return $result;
+        } catch (Exception $e) {
+            return "Project not set up properly";
         }
     }
 

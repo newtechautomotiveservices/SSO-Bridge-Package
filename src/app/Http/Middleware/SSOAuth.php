@@ -17,32 +17,25 @@ class SSOAuth
      */
     public function handle($request, Closure $next)
     {
+//        return $next($request);
         $route_name = $request->route()->getName();
-        if($request->session()->has("_identifier(" . config('ssobridge.sso.application.id') . ")") && $request->session()->has("_session_token(" . config('ssobridge.sso.application.id') . ")")) {
+        if($request->session()->has('sso-jwt') && $request->session()->has('sso-jwt-array')) {
             $data = [
-                "identifier" => $request->session()->get("_identifier(" . config('ssobridge.sso.application.id') . ")"),
-                "session_token" => $request->session()->get("_session_token(" . config('ssobridge.sso.application.id') . ")")
+                "sso-jwt" => $request->session()->get('sso-jwt'),
+                "sso-jwt-array" => $request->session()->get('sso-jwt-array')
             ];
-            $authenticated = User::user_authenticate_session($data);
-            if($authenticated['status'] == "success") {
-                $request->session()->put([
-                    "_identifier(" . config('ssobridge.sso.application.id') . ")" => $authenticated['data']['id'],
-                    "_session_token(" . config('ssobridge.sso.application.id') . ")" => $authenticated['data']['token']
-                ]);
-                if (User::user()->can("default::access_site")) {
-                    if($route_name == "sso.auth.login") {
-                        return redirect(config('ssobridge.sso.application.home_route'));
-                    }
-                    return $next($request);
-                } else {
-                    abort(403, 'You dont have access to this site.');
+            $authenticated = User::authenticate_session($data);
+            if($authenticated->status == "success") {
+                if($route_name == "auth.login") {
+                    return redirect('/');
                 }
+                return $next($request);
             }
         }
-        if($route_name == "sso.auth.login") {
+        if($route_name == "auth.login") {
             return $next($request);
         }
         $request->session()->flush();
-        return redirect(config('ssobridge.sso.application.logout_route'));
+        return redirect('/logout');
     }
 }
