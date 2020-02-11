@@ -35,8 +35,6 @@ class SSOSetup extends Command
             "id" => null,
             "name" => null,
             "identifier" => null,
-            "database" => null,
-            "server_id" => null,
             "is_hidden" => null,
             "token" => null
         ]
@@ -59,7 +57,7 @@ class SSOSetup extends Command
      */
     public function handle()
     {
-        
+
         $this->info('===================================================');
         $this->info(' [SSO] Welcome to the Single Sign On system setup.');
         $this->info('===================================================');
@@ -67,33 +65,13 @@ class SSOSetup extends Command
           if ($this->confirm('Do you want to remove all of Laravels default authentication? (Highly Recommended)')) {
             $this->dialogue_removeAuthentication();
           } else {
-            $this->info("[SSO] Skipping authentication cleanse.");
+            $this->info("[SSO] Skipping authentication removal.");
           }
 
           if ($this->confirm('Do you want to publish the vendor and auto configure the configuration files? (Highly Recommended)')) {
             $this->dialogue_autoConfigure();
           } else {
             $this->info("[SSO] Skipping configuration.");
-          }
-
-          $migrate = $this->choice('How do you want to migrate? ("fresh" recommended)', ['normal', 'fresh', 'dont']);
-          switch($migrate) {
-            case "normal":
-              if ($this->confirm('Are you sure you want to migrate?')) {
-                exec('php artisan migrate');
-                $this->info("[SSO] Migration complete.");
-              }
-              
-              break;
-            case "fresh": 
-              if ($this->confirm('Are you sure you want to migrate fresh?')) {
-                exec('php artisa migrate:fresh');
-                $this->info("[SSO] Migration complete.");
-              }
-              break;
-            case "dont": 
-              $this->info("[SSO] Skipping migration.");
-              break;
           }
 
         }
@@ -103,16 +81,15 @@ class SSOSetup extends Command
       exec("php artisan vendor:publish --provider='Newtech\SSOBridge\SSOBridgeProvider'");
       $this->info("Vendor has been published.");
       // -- Environment
-      $this->data['environment'] = $this->choice('What environment of SSO do you want this setup in?', ['dev', 'test', 'prod']);
+      $this->data['environment'] = $this->choice('What environment of SSO do you want this setup in?', ['local-sso', 'dev', 'test', 'prod']);
       switch ($this->data['environment']) {
           default:
               $this->data['sso_url'] = "https://ssodev.newtechautomotiveservices.com/";
-              $this->data['application']['server_id'] = 1;
               break;
       }
 
       $this->data['login_route'] = $this->ask("What do you want as a login route? (EX: /sso/login)");
-      $this->data['logout_route'] = $this->ask("What do you want as a logout route? (EX: /sso/login)");
+      $this->data['logout_route'] = $this->ask("What do you want as a logout route? (EX: /sso/logout)");
       $this->data['home_route'] = $this->ask("Where is the dashboard of your application? (EX: /home)");
 
       // -- Validation and Tokens
@@ -156,7 +133,6 @@ class SSOSetup extends Command
       // -- Creating the application
       $result = $this->createApplication();
       $this->data['application']['id'] = $result->data->id;
-      $this->data['application']['token'] = $result->data->session->token;
       // -- Printing out the application.
       $this->info('===================================================');
       $this->info(' [SSO] Your application was grabbed successfully.');
@@ -165,12 +141,6 @@ class SSOSetup extends Command
       $this->line('    Name: ' . $result->data->name);
       $this->line('    Identifier: ' . $result->data->identifier);
       $this->line('    Hidden: ' . $result->data->is_hidden);
-      if(isset($result->data->server)) {
-        $this->line('    SQL Server: ' . $result->data->server->name . ' (' . $result->data->server->id . ')');
-      } else {
-        $this->line('    SQL Server: There is no server configured, you must configure it on the SSO panel.');
-      }
-      $this->line('    Database: ' . $result->data->database);
       $this->info(' --------------------------------------------------------------------------------------------');
       $this->info('===================================================');
     }
@@ -187,7 +157,6 @@ class SSOSetup extends Command
       } while ($applicationValid->status != "success");
 
       $this->data['application']['id'] =  $applicationValid->data->id;
-      $this->data['application']['token'] =  $applicationValid->data->session->token;
 
       // -- Printing out the application.
       $this->info('===================================================');
@@ -197,12 +166,6 @@ class SSOSetup extends Command
       $this->line('    Name: ' . $applicationValid->data->name);
       $this->line('    Identifier: ' . $applicationValid->data->identifier);
       $this->line('    Hidden: ' . $applicationValid->data->is_hidden);
-      if(isset($result->data->server)) {
-        $this->line('    SQL Server: ' . $result->data->server->name . ' (' . $result->data->server->id . ')');
-      } else {
-        $this->line('    SQL Server: There is no server configured, you must configure it on the SSO panel.');
-      }
-      $this->line('    Database: ' . $applicationValid->data->database);
       $this->info(' --------------------------------------------------------------------------------------------');
       $this->info('===================================================');
     }
@@ -228,7 +191,7 @@ class SSOSetup extends Command
 
 
     // ---------- REQUESTS
-    public function checkToken($token) {        
+    public function checkToken($token) {
         try {
           $client = new Client();
           $request = $client->get($this->data['sso_url'] . "api/remote/application/checkRegistrationToken/" . $token);
