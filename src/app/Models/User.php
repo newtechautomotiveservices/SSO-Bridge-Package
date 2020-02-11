@@ -41,10 +41,6 @@ class User extends Model
             $client = new Client();
             $request = $client->get(config('ssobridge.sso.authentication_url') . "api/remote/user/checkJWT/" . config('ssobridge.sso.application.id') . "/" . $jwt);
             $result = json_decode($request->getBody()->getContents());
-            if($result->status == "failure") {
-                dd($result);
-                return $result->message;
-            }
             return $result;
         } catch (Exception $e) {
             return "Project not set up properly";
