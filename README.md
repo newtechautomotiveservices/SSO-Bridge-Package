@@ -60,6 +60,7 @@ Route::view('/', 'welcome')->name('home');
 ## Models
 ### User
 #### Basic Usage
+- The User model can be imported to a class by using `\Newtech\SSOBridge\App\Models\User`
 - Getting the current user can be done by doing `\Newtech\SSOBridge\App\Models\User::user()`
 #### Variables & Functions
 
