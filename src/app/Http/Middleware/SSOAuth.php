@@ -26,10 +26,14 @@ class SSOAuth
             ];
             $authenticated = User::authenticate_session($data);
             if($authenticated->status == "success") {
-                if($route_name == "auth.login") {
-                    return redirect('/');
+                if(User::user()->can("default::access_site")) {
+                    if($route_name == "auth.login") {
+                        return redirect('/');
+                    }
+                    return $next($request);
+                } else {
+                    abort(403, "You don't have access to this website.");
                 }
-                return $next($request);
             }
         }
         if($route_name == "auth.login") {

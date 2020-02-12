@@ -113,7 +113,6 @@ class SSOSetup extends Command
       config([
         'ssobridge.sso.authentication_url' => $this->data['sso_url'],
         'ssobridge.sso.application.id' => $this->data['application']['id'],
-        'ssobridge.sso.application.token' => $this->data['application']['token'],
         'ssobridge.sso.application.login_route' => $this->data['login_route'],
         'ssobridge.sso.application.logout_route' => $this->data['logout_route'],
         'ssobridge.sso.application.home_route' => $this->data['home_route']
@@ -127,7 +126,6 @@ class SSOSetup extends Command
     public function dialogue_createApplication() {
       $this->data['application']['name'] = $this->ask('What is this applications name? (Use capitalization and spaces)');
       $this->data['application']['identifier'] = $this->ask('What is this applications identifier? (This can be anything memorable, use pascal case)');
-      $this->data['application']['database'] = $this->ask('What is this applications database name?');
       $this->data['application']['is_hidden'] = (int)$this->confirm('Should this application be hidden from the SSO panel?');
 
       // -- Creating the application
@@ -212,8 +210,6 @@ class SSOSetup extends Command
             'form_params' => [
               'name' => $this->data['application']['name'],
               'identifier' => $this->data['application']['identifier'],
-              'database' => $this->data['application']['database'],
-              'server_id' => $this->data['application']['server_id'],
               'is_hidden' => $this->data['application']['is_hidden']
             ]
           ]);

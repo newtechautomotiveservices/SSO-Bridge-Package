@@ -34,6 +34,6 @@ class SSOBridgeProvider extends ServiceProvider
         ], 'migrations');
 
         $this->app['router']->aliasMiddleware('ssobridge' , \Newtech\SSOBridge\App\Http\Middleware\SSOAuth::class);
-        $this->app['router']->aliasMiddleware('ssoroutecheck' , \Newtech\SSOBridge\App\Http\Middleware\SSORoute::class);
+        $this->app['router']->aliasMiddleware('ssoroute' , \Newtech\SSOBridge\App\Http\Middleware\SSORoute::class);
     }
 }
