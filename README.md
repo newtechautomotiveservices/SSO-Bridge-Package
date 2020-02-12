@@ -62,11 +62,14 @@ Route::view('/', 'welcome')->name('home');
 #### Basic Usage
 - Getting the current user can be done by doing `\Newtech\SSOBridge\App\Models\User::user()`
 #### Variables & Functions
-- `name` (Variable) - Gets the users first and last name. `EX: Johnny Tester`
-- `first_name` (Variable) - Gets the users first name. `EX: johnny`
-- `last_name` (Variable) - Gets the users last name. `EX: tester`
-- `email` (Variable) - Gets the users last name. `EX: johnny.tester@ntautoservices.com`
-- `active_store` (Variable) - Gets the users active store.
-- `store_number` (Variable) - Gets the users active store number. `EX: 15212`
-- `can('permission_name')` - Returns a boolean if the user has the permission identifier specified.
-- `permissions` (Variable) - Gets all of the users permissions.
+
+| Usage  | Description | Output |
+| ------------- | ------------- | ------------- |
+| `name`  | Gets the users first and last name.  | `Johnny Tester`  |
+| `first_name`  | Gets the users first name.  | `johnny`  |
+| `last_name`  | Gets the users last name.  | `tester`  |
+| `email`  | Gets the users email.  | `johnny.tester@ntautoservices.com`  |
+| `active_store`  | Gets the users active store.  | JSON Object  |
+| `can('permission_name')`  | Returns if the user has the permission identifier specified.  | Boolean  |
+| `permissions`  | Gets all of the users permissions.  | JSON Object  |
+
