@@ -17,16 +17,21 @@ class SSOAuth
      */
     public function handle($request, Closure $next)
     {
-//        return $next($request);
         $route_name = $request->route()->getName();
-        if($request->session()->has('sso-jwt') && $request->session()->has('sso-jwt-array')) {
+        if($request->session()->has('sso-jwt-' . config('ssobridge.sso.application.id')) && $request->session()->has('sso-jwt-array-' . config('ssobridge.sso.application.id'))) {
             $data = [
-                "sso-jwt" => $request->session()->get('sso-jwt'),
-                "sso-jwt-array" => $request->session()->get('sso-jwt-array')
+                "sso-jwt" => $request->session()->get('sso-jwt-' . config('ssobridge.sso.application.id')),
+                "sso-jwt-array" => $request->session()->get('sso-jwt-array-' . config('ssobridge.sso.application.id'))
             ];
+
+            // Validating the session.
             $authenticated = User::authenticate_session($data);
+
             if($authenticated->status == "success") {
+
+                // Checking the default "access_site" permission.
                 if(User::user()->can("default::access_site")) {
+                    // Checking for "auth.login" to redirect the user.
                     if($route_name == "auth.login") {
                         return redirect('/');
                     }

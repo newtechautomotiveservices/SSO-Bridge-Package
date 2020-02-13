@@ -19,6 +19,7 @@ class SSORoute
     {
          $user = User::user();
          if($user) {
+             // Checking the users permissions for the route.
              if($user->can("route::" . $request->route()->getName())) {
                 return $next($request);
              } else {

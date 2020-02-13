@@ -26,7 +26,6 @@ class SSOSetup extends Command
     public $data = [
         "registration_token" => null,
         "application_registered" => false,
-        "environment" => "dev",
         "sso_url" => null,
         "home_route" => null,
         "logout_route" => null,
@@ -57,17 +56,23 @@ class SSOSetup extends Command
      */
     public function handle()
     {
-
+        // Intro
         $this->info('===================================================');
         $this->info(' [SSO] Welcome to the Single Sign On system setup.');
         $this->info('===================================================');
+
+
+        // Confirmation
         if ($this->confirm('This operation will reset your SSO configuration, are you sure you want to do this?')) {
+
+          // Removing default auth
           if ($this->confirm('Do you want to remove all of Laravels default authentication? (Highly Recommended)')) {
             $this->dialogue_removeAuthentication();
           } else {
             $this->info("[SSO] Skipping authentication removal.");
           }
 
+          // Publish vendor and configuration.
           if ($this->confirm('Do you want to publish the vendor and auto configure the configuration files? (Highly Recommended)')) {
             $this->dialogue_autoConfigure();
           } else {
@@ -81,16 +86,10 @@ class SSOSetup extends Command
       exec("php artisan vendor:publish --provider='Newtech\SSOBridge\SSOBridgeProvider'");
       $this->info("Vendor has been published.");
       // -- Environment
-      $this->data['environment'] = $this->choice('What environment of SSO do you want this setup in?', ['local-sso', 'dev', 'test', 'prod']);
-      switch ($this->data['environment']) {
-          default:
-              $this->data['sso_url'] = "https://ssodev.newtechautomotiveservices.com/";
-              break;
-      }
-
-      $this->data['login_route'] = $this->ask("What do you want as a login route? (EX: /sso/login)");
-      $this->data['logout_route'] = $this->ask("What do you want as a logout route? (EX: /sso/logout)");
-      $this->data['home_route'] = $this->ask("Where is the dashboard of your application? (EX: /home)");
+      $this->data['sso_url'] = $this->ask('What is the SSO url you want to use? [ EX http://192.168.1.1:4703/ ]');
+      $this->data['login_route'] = $this->ask("What do you want as a login route? [ EX: /login ]");
+      $this->data['logout_route'] = $this->ask("What do you want as a logout route? [ EX: /logout ]");
+      $this->data['home_route'] = $this->ask("Where is the dashboard of your application? [ EX: /home ]");
 
       // -- Validation and Tokens
       $tokenValid = null;
@@ -98,7 +97,7 @@ class SSOSetup extends Command
         if($tokenValid != null) {
             $this->error("This token was invalid!");
         }
-        $this->data['registration_token'] = $this->ask("Please go to ( " . $this->data['sso_url'] . "remote/application/registration_token ), please copy and paste the token provided there.");
+        $this->data['registration_token'] = $this->ask("Please go to ( " . $this->data['sso_url'] . "admin/applications/registration_token ), please copy and paste the token provided there.");
         $tokenValid = $this->checkToken($this->data['registration_token']);
       } while ($tokenValid !== "success");
 
@@ -110,9 +109,11 @@ class SSOSetup extends Command
         $this->dialogue_getApplication();
       }
 
+      // Setting the config file.
       config([
         'ssobridge.sso.authentication_url' => $this->data['sso_url'],
         'ssobridge.sso.application.id' => $this->data['application']['id'],
+        'ssobridge.sso.application.token' => $this->data['application']['token'],
         'ssobridge.sso.application.login_route' => $this->data['login_route'],
         'ssobridge.sso.application.logout_route' => $this->data['logout_route'],
         'ssobridge.sso.application.home_route' => $this->data['home_route']
@@ -155,6 +156,7 @@ class SSOSetup extends Command
       } while ($applicationValid->status != "success");
 
       $this->data['application']['id'] =  $applicationValid->data->id;
+        $this->data['application']['token'] =  $applicationValid->data->token;
 
       // -- Printing out the application.
       $this->info('===================================================');
@@ -189,6 +191,7 @@ class SSOSetup extends Command
 
 
     // ---------- REQUESTS
+    // Check the registration token.
     public function checkToken($token) {
         try {
           $client = new Client();
@@ -200,6 +203,7 @@ class SSOSetup extends Command
         }
     }
 
+    // Create an application on SSO.
     public function createApplication() {
         try {
           $client = new Client();
@@ -223,6 +227,7 @@ class SSOSetup extends Command
         }
     }
 
+    // Get an application on SSO.
     public function getApplication() {
         try {
           $client = new Client();
