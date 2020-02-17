@@ -26,7 +26,6 @@ class SSOAuth
 
             // Validating the session.
             $authenticated = User::authenticate_session($data);
-
             if($authenticated->status == "success") {
 
                 // Checking the default "access_site" permission.
