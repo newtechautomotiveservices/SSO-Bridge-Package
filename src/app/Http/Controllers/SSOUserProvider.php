@@ -5,6 +5,7 @@ namespace Newtech\SSOBridge\App\Http\Controllers;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Session;
+Use Illuminate\Support\Carbon;
 
 class SSOUserProvider implements UserProvider
 {
@@ -25,7 +26,13 @@ class SSOUserProvider implements UserProvider
     public function retrieveById($identifier)
     {
         if(Session::has('sso') && Session::has('sso.id')){
-            return new SSOUser(Request()->session()->get('sso'));
+            if(Session::get('sso.expire') < Carbon::now()->timestamp){
+                Session::flush();
+                return null;
+            }
+            if(in_array('default::access_site', Session::get('sso.permissions'))){
+                return new SSOUser(request()->session()->get('sso'));
+            }
         }
         return null;
     }
