@@ -5,10 +5,6 @@ namespace Newtech\SSOBridge\App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-use Newtech\SSOBridge\App\Models\User;
-
-use GuzzleHttp\Exception\GuzzleException;
-use GuzzleHttp\Client;
 use \Illuminate\Support\Facades\Session;
 use Illuminate\Support\Carbon;
 
@@ -19,7 +15,7 @@ class SSOController extends Controller
     public function get_setToken ($token) {
         $jwt_explode = explode('.', $token);
         if(count($jwt_explode) == 3){
-            $signature = hash_hmac('sha256', $jwt_explode[0]. "." . $jwt_explode[1], config('ssobridge.sso.token'), false);
+            $signature = hash_hmac('sha256', $jwt_explode[0]. "." . $jwt_explode[1], config('sso.token'), false);
             if($signature == $jwt_explode[2]){
                 $perms = $this->decode($jwt_explode[1]);
                 if(!$perms){

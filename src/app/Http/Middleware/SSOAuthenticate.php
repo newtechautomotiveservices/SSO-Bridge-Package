@@ -9,6 +9,6 @@ class SSOAuthenticate extends Authenticate
 {
     public function redirectTo($request){
         $request->session()->put('sso.authLeft', $request->fullUrl());
-        return config('ssobridge.sso.authentication_url').'/remote/'.config('ssobridge.sso.id').'?returnTo="'.base64_encode($request->root()).'"';
+        return config('sso.authentication_url').'/remote/'.config('sso.id').'?returnTo="'.base64_encode($request->root()).'"';
     }
 }
