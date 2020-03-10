@@ -47,7 +47,7 @@ class SSOUserProvider implements UserProvider
     {
         return null;
     }
-  
+
      /**
      * Retrieve a user by their unique identifier and "remember me" token.
      *
