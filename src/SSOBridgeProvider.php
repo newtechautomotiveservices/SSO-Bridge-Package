@@ -35,6 +35,7 @@ class SSOBridgeProvider extends ServiceProvider
 
         $this->app->make('Newtech\SSOBridge\App\Http\Controllers\SSOController');
         $this->publishes([__DIR__ . '/config/sso.php' => config_path('sso.php')], 'config');
+        $this->publishes([__DIR__.'/resources/errors' => resource_path('views/errors'),]);
 
         $this->app['router']->aliasMiddleware('sso' , \Newtech\SSOBridge\App\Http\Middleware\SSORouteAccess::class);
         $this->app['router']->aliasMiddleware('auth' , \Newtech\SSOBridge\App\Http\Middleware\SSOAuthenticate::class);
