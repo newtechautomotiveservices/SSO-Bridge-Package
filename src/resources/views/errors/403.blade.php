@@ -69,18 +69,18 @@
                     <p class="card-text">If you think you are seeing this by mistake please contact an administrator.</p>
                 </div>
             </div>
-            <div class="card mt-2">
-                <div class="card-body">
-                    <!--Blue select-->
-                    <select id="storeSelect" class="mdb-select md-form colorful-select dropdown-dark" onchange="selectStore()">
-                        @foreach(user()->stores as $store)
-                            <option value="{{$store->store_number}}">{{$store->name}}</option>
-                        @endforeach
-                    </select>
-                    <label class="mdb-main-label">Active Store</label>
-                    <!--/Blue select-->
-                </div>
-            </div>
+{{--            <div class="card mt-2">--}}
+{{--                <div class="card-body">--}}
+{{--                    <!--Blue select-->--}}
+{{--                    <select id="storeSelect" class="mdb-select md-form colorful-select dropdown-dark" onchange="selectStore()">--}}
+{{--                        @foreach(user()->stores as $store)--}}
+{{--                            <option value="{{$store->store_number}}">{{$store->name}}</option>--}}
+{{--                        @endforeach--}}
+{{--                    </select>--}}
+{{--                    <label class="mdb-main-label">Active Store</label>--}}
+{{--                    <!--/Blue select-->--}}
+{{--                </div>--}}
+{{--            </div>--}}
         </div>
         <!-- Content -->
 

@@ -35,7 +35,7 @@ class SSOBridgeProvider extends ServiceProvider
 
         $this->app->make('Newtech\SSOBridge\App\Http\Controllers\SSOController');
         $this->publishes([__DIR__ . '/config/sso.php' => config_path('sso.php')], 'config');
-        $this->publishes([__DIR__.'/resources/errors' => resource_path('views/errors'),]);
+        $this->publishes([__DIR__.'/resources/views/errors' => resource_path('views/errors'),]);
 
         $this->app['router']->aliasMiddleware('sso' , \Newtech\SSOBridge\App\Http\Middleware\SSORouteAccess::class);
         $this->app['router']->aliasMiddleware('auth' , \Newtech\SSOBridge\App\Http\Middleware\SSOAuthenticate::class);
@@ -45,7 +45,7 @@ class SSOBridgeProvider extends ServiceProvider
         if(!$this->app['config']->has("auth.providers.sso")){
             $this->app['config']->set("auth.providers.sso", Array('driver' => 'sso'));
         }
-        
+
         Gate::define('sso', function(SSOUser $user, ...$action){
             if(is_array($action)){
                return ! empty(array_intersect($user->permissions, $action));
@@ -54,7 +54,7 @@ class SSOBridgeProvider extends ServiceProvider
             }else{
                 throw new \Exception("Invalid parameter passed to SSO gate");
             }
-            
+
         });
 
 

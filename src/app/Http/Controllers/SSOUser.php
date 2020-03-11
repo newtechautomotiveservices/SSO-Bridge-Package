@@ -7,7 +7,7 @@ use App\Models\Auth\User;
 
 class SSOUser implements UserContract
 {
-    
+
     /**
      * All of the user's attributes.
      *
@@ -42,7 +42,12 @@ class SSOUser implements UserContract
         return 'id';
     }
 
-    /**
+    public function name()
+    {
+        return ucfirst($this->attributes['firstName']) . ' ' . ucfirst($this->attributes['lastName']);
+    }
+
+    /**0
      * Get the unique identifier for the user.
      *
      * @return mixed
