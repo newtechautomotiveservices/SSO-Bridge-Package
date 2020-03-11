@@ -2,8 +2,8 @@
 
 if (! function_exists('sso_user')) {
 
-    function sso_user()
+    function user()
     {
-        return 'test';
+        return \Auth::user();
     }
 }
