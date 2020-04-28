@@ -61,32 +61,12 @@
                     Error
                 </div>
                 <div class="card-body">
-                    <h1 class="card-title">403</h1>
-                    <p>{{ $exception->getMessage() }}</p>
+                    <h1 class="card-title">404</h1>
+                    <p>We can't find the page you're looking for.</p>
                     <a onclick="history.back(-1)" class="btn btn-outline-dark btn-md">Go back</a>
                     <a href="/logout" class="btn btn-outline-dark btn-md">Sign Out</a>
                     <hr>
                     <p class="card-text">If you think you are seeing this by mistake please contact an administrator.</p>
-                </div>
-            </div>
-            <div class="card mt-2">
-                <div class="card-body">
-                    <!--Blue select-->
-                    @if(isset(\Auth::user()->possibleStores))
-                        <select id="storeSelect" class="mdb-select md-form colorful-select dropdown-dark" onchange="selectStore()">
-                            @foreach(\Auth::user()->possibleStores as $store)
-                                <option value="{{$store}}">{{$store}}</option>
-                            @endforeach
-                        </select>
-
-                    @else
-                        <select id="storeSelect" class="mdb-select md-form colorful-select dropdown-dark" onchange="selectStore()" disabled>
-                            <option value="unavailable">Stores Unavaiable</option>
-                        </select>
-                    @endif
-
-                    <label class="mdb-main-label">Active Store</label>
-                    <!--/Blue select-->
                 </div>
             </div>
         </div>
@@ -111,22 +91,6 @@
     });
 </script>
 
-<script>
-    function selectStore() {
-        let store_id = $('#storeSelect')[0].value;
-
-        $.ajax({
-            type: 'POST',
-            url: '/ajax/user/setStore',
-            data: {
-                store_id: store_id
-            },
-            success: function (data) {
-                console.log(data);
-            }
-        });
-    }
-</script>
 <script>
 
     $(document).ready(function() {
