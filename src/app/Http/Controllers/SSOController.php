@@ -27,10 +27,8 @@ class SSOController extends Controller
                 }else{
                     $prevPath = parse_url(Session::get('_previous')[0] ?? '/', PHP_URL_PATH);
                 }
-                
                 Session::put(['sso' => $perms]);
                 return redirect($prevPath);
-
             }
             abort(403, 'Unauthorzed');
         }
