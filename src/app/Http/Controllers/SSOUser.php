@@ -24,12 +24,7 @@ class SSOUser implements UserContract
     public function __construct(array $attributes)
     {
         //$this->attributes = $attributes;
-        $this->attributes['id'] = $attributes['id'] ?? '';
-        $this->attributes['firstName'] = $attributes['firstName'] ?? '';
-        $this->attributes['lastName'] = $attributes['lastName'] ?? '';
-        $this->attributes['email'] = $attributes['email'] ?? '';
-        $this->attributes['permissions'] = $attributes['permissions'] ?? [];
-        $this->attributes['possibleStores'] = $attributes['possibleStores'] ?? [];
+        $this->attributes = $attributes;
     }
 
     /**
