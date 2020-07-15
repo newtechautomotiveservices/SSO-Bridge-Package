@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 
 use \Illuminate\Support\Facades\Session;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Http;
 
 
 class SSOController extends Controller
@@ -33,6 +35,35 @@ class SSOController extends Controller
             abort(403, 'Unauthorzed');
         }
         abort(404, 'Not Found');
+    }
+
+    public function logout(){
+        $response = Http::post(Str::finish(config('sso.authentication_url'), '/').'api/appControl/logout', [
+            'token' => request()->user()->account->remember,
+            'account' => request()->user()->account->id
+        ]);
+        if($response->successful()){
+            return $this->refreshPermissions();
+        }
+        return back();
+    }
+
+    public function refreshPermissions(){
+        Session::pull('sso');
+        return back();
+    }
+
+    public function changeUser($id){
+        $response = Http::post(Str::finish(config('sso.authentication_url'), '/').'api/appControl/userchange', [
+            'app_id' => config('sso.id'),
+            'token' => config('sso.token'),
+            'account' => request()->user()->account->id,
+            'user_id' => $id
+        ]);
+        if($response->successful()){
+            return $this->refreshPermissions();
+        }
+        return back();
     }
 
     private function decode($token){
