@@ -24,7 +24,20 @@ class SSOUser implements UserContract
     public function __construct(array $attributes)
     {
         //$this->attributes = $attributes;
-        $this->attributes = $attributes;
+        $this->attributes['id'] = $attributes['id'];
+        $this->attributes['account'] = (object)$attributes['account'];
+        $this->attributes['account']->full_name = ucfirst($attributes['account']['first_name'])." ".ucfirst($attributes['account']['last_name']);
+        $this->attributes['username'] = $attributes['username'];
+        $this->attributes['store'] = (object)$attributes['store'];
+        $this->attributes['display'] = ucfirst($attributes['username'])."@".ucfirst($attributes['store']['name']);
+        $this->attributes['permissions'] = $attributes['permissions'];
+        $this->attributes['entityKey'] = $attributes['entityKey'];
+        $this->attributes['possibleUsers'] = [];
+        foreach($attributes['possibleUsers'] as $user){
+            $user['store'] = (object)$user['store'];
+            $this->attributes['possibleUsers'][] = (object)$user; 
+        }
+        $this->attributes['expire'] = $attributes['expire'];
     }
 
     /**
@@ -37,12 +50,7 @@ class SSOUser implements UserContract
         return 'id';
     }
 
-    public function name()
-    {
-        return ucfirst($this->attributes['firstName']) . ' ' . ucfirst($this->attributes['lastName']);
-    }
-
-    /**0
+    /**
      * Get the unique identifier for the user.
      *
      * @return mixed
