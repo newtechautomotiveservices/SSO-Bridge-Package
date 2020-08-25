@@ -1,6 +1,6 @@
 <?php
 
-namespace Newtech\SSOBridge\App\Http\Controllers;
+namespace Newtech\SSOBridge;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -29,7 +29,8 @@ class SSOController extends Controller
                 }else{
                     $prevPath = parse_url(Session::get('_previous')[0] ?? '/', PHP_URL_PATH);
                 }
-                Session::put(['sso' => $perms]);
+                $value = json_encode($perms);
+                \Cookie::queue('ssoAuth', $value, 10080);
                 return redirect($prevPath);
             }
             abort(403, 'Unauthorzed');
@@ -42,10 +43,8 @@ class SSOController extends Controller
             'token' => request()->user()->account->remember,
             'account' => request()->user()->account->id
         ]);
-        if($response->successful()){
-            return $this->refreshPermissions();
-        }
-        return back();
+        \Cookie::queue(\Cookie::forget('ssoAuth'));
+        return $this->refreshPermissions();
     }
 
     public function refreshPermissions(){
@@ -56,7 +55,7 @@ class SSOController extends Controller
     public function changeUser($id){
         $response = Http::post(Str::finish(config('sso.authentication_url'), '/').'api/appControl/userchange', [
             'app_id' => config('sso.id'),
-            'token' => config('sso.token'),
+            'token' => request()->user()->getRememberToken(),
             'account' => request()->user()->account->id,
             'user_id' => $id
         ]);

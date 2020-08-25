@@ -1,9 +1,9 @@
 <?php
 
-namespace Newtech\SSOBridge\App\Http\Controllers;
+namespace Newtech\SSOBridge;
 
 use Illuminate\Contracts\Auth\Authenticatable as UserContract;
-use App\Models\Auth\User;
+Use Illuminate\Support\Carbon;
 
 class SSOUser implements UserContract
 {
@@ -23,21 +23,23 @@ class SSOUser implements UserContract
      */
     public function __construct(array $attributes)
     {
+
         //$this->attributes = $attributes;
         $this->attributes['id'] = $attributes['id'];
         $this->attributes['account'] = (object)$attributes['account'];
-        $this->attributes['account']->full_name = ucfirst($attributes['account']['first_name'])." ".ucfirst($attributes['account']['last_name']);
+        $this->attributes['account']->full_name = $attributes['account']->full_name ??ucfirst($attributes['account']['first_name'])." ".ucfirst($attributes['account']['last_name']);
         $this->attributes['username'] = $attributes['username'];
         $this->attributes['store'] = (object)$attributes['store'];
-        $this->attributes['display'] = ucfirst($attributes['username'])."@".ucfirst($attributes['store']['name']);
+        $this->attributes['display'] = $attributes['display'] ?? ucfirst($attributes['username'])."@".ucfirst($attributes['store']['name']);
         $this->attributes['permissions'] = $attributes['permissions'];
         $this->attributes['entityKey'] = $attributes['entityKey'];
         $this->attributes['possibleUsers'] = [];
         foreach($attributes['possibleUsers'] as $user){
-            $user['store'] = (object)$user['store'];
-            $this->attributes['possibleUsers'][] = (object)$user; 
+            if(is_array($user)){
+                $user['store'] = (object)$user['store'];
+            }
+            $this->attributes['possibleUsers'][] = (object)$user;
         }
-        $this->attributes['expire'] = $attributes['expire'];
     }
 
     /**
@@ -77,7 +79,7 @@ class SSOUser implements UserContract
      */
     public function getRememberToken()
     {
-        return '';
+        return $this->remember;
     }
 
     /**
@@ -88,6 +90,7 @@ class SSOUser implements UserContract
      */
     public function setRememberToken($value)
     {
+        $this->attributes['remember'] = $value;
         return;
     }
 
@@ -98,7 +101,7 @@ class SSOUser implements UserContract
      */
     public function getRememberTokenName()
     {
-        return '';
+        return;
     }
 
     /**
@@ -144,5 +147,9 @@ class SSOUser implements UserContract
     public function __unset($key)
     {
         unset($this->attributes[$key]);
+    }
+
+    public function cache(){
+        \Session::put('sso', array_merge($this->attributes, ['expire' => Carbon::now()->addMinutes(5)->timestamp]));
     }
 }

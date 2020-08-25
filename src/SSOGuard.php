@@ -1,10 +1,12 @@
 <?php
 
-namespace Newtech\SSOBridge\App\Http\Controllers;
+namespace Newtech\SSOBridge;
 
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Http\Request;
+Use Illuminate\Support\Facades\Session;
+Use Illuminate\Support\Carbon;
 
 
 
@@ -52,9 +54,24 @@ class SSOGuard implements Guard
         if (! is_null($this->user)) {
             return $this->user;
         }
-        
         $user = null;
-        $user = $this->provider->retrieveById('');
+        if(Session::has('sso') && Session::has('sso.id')){
+            if(Session::get('sso.expire') < Carbon::now()->timestamp){
+                Session::pull('sso');
+            }else if(in_array('default::access_site', Session::get('sso.permissions') ?? [])){
+                return $this->provider->retrieveById('');
+            }else{
+                Session::pull('sso');
+            }
+        }
+        if (request()->cookie('ssoAuth')
+            && ($credentials = json_decode(request()->cookie('ssoAuth')))) {
+            $user = $this->provider->retrieveByToken($credentials->id, $credentials->remember);
+            if(!is_null($user)){
+                $this->provider->updateRememberToken($user, $credentials->remember);
+                $user->cache();
+            }
+        }
         return $this->user = $user;
     }
 

@@ -1,11 +1,12 @@
 <?php
 
-namespace Newtech\SSOBridge\App\Http\Controllers;
+namespace Newtech\SSOBridge;
 
 use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Session;
-Use Illuminate\Support\Carbon;
+
+Use Illuminate\Support\Facades\Http;
 
 class SSOUserProvider implements UserProvider
 {
@@ -25,16 +26,7 @@ class SSOUserProvider implements UserProvider
      */
     public function retrieveById($identifier)
     {
-        if(Session::has('sso') && Session::has('sso.id')){
-            if(Session::get('sso.expire') < Carbon::now()->timestamp){
-                Session::flush();
-                return null;
-            }
-            if(in_array('default::access_site', Session::get('sso.permissions'))){
-                return new SSOUser(request()->session()->get('sso'));
-            }
-        }
-        return null;
+        return new SSOUser(request()->session()->get('sso'));
     }
 
      /**
@@ -45,6 +37,7 @@ class SSOUserProvider implements UserProvider
      */
     public function retrieveByCredentials($credentials)
     {
+        
         return null;
     }
 
@@ -57,6 +50,12 @@ class SSOUserProvider implements UserProvider
      */
     public function retrieveByToken($identifier, $token)
     {
+        $response = Http::get(\Str::finish(config('sso.authentication_url'), '/').'api/appControl/permissions/'.config('sso.id').'/'.$identifier.'/'.$token);
+        if($response->successful()){
+            return new SSOUser($response->json());
+        }else{
+            \Cookie::Queue(\Cookie::forget('ssoAuth'));
+        }
         return null;
     }
 
@@ -69,7 +68,7 @@ class SSOUserProvider implements UserProvider
      */
     public function updateRememberToken(Authenticatable $user, $token)
     {
-        return;
+        return $user->setRememberToken($token);
     }
 
     /**

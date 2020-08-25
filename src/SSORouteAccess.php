@@ -1,6 +1,6 @@
 <?php
 
-namespace Newtech\SSOBridge\App\Http\Middleware;
+namespace Newtech\SSOBridge;
 
 use Closure;
 use \Illuminate\Support\Facades\Gate;
