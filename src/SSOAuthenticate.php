@@ -1,6 +1,6 @@
 <?php
 
-namespace Newtech\SSOBridge\App\Http\Middleware;
+namespace Newtech\SSOBridge;
 
 use \Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Http\Request;
@@ -11,7 +11,7 @@ class SSOAuthenticate extends Authenticate
     public function redirectTo($request){
 
         if($request->session()->has('sso') && $request->session()->has('sso.id')){
-            session()->flush();
+            session()->pull('sso');
             abort(403, 'Acess denied');
         }
         $request->session()->put('sso.authLeft', $request->fullUrl());

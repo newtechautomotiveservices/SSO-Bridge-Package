@@ -5,11 +5,9 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
-use Newtech\SSOBridge\App\Console\Commands\SSOSetup;
-
-use Newtech\SSOBridge\App\Http\Controllers\SSOUserProvider;
-use Newtech\SSOBridge\App\Http\Controllers\SSOGuard;
-use Newtech\SSOBridge\App\Http\Controllers\SSOUser;
+use Newtech\SSOBridge\SSOUserProvider;
+use Newtech\SSOBridge\SSOGuard;
+use Newtech\SSOBridge\SSOUser;
 
 class SSOBridgeProvider extends ServiceProvider
 {
@@ -18,11 +16,6 @@ class SSOBridgeProvider extends ServiceProvider
      */
     public function boot()
     {
-        if ($this->app->runningInConsole()) {
-            $this->commands([
-                SSOSetup::class
-            ]);
-        }
         // Bootstrap code here.
         include __DIR__.'/routes/web.php';
     }
@@ -33,12 +26,12 @@ class SSOBridgeProvider extends ServiceProvider
     public function register()
     {
 
-        $this->app->make('Newtech\SSOBridge\App\Http\Controllers\SSOController');
+        $this->app->make('Newtech\SSOBridge\SSOController');
         $this->publishes([__DIR__ . '/config/sso.php' => config_path('sso.php')], 'config');
         $this->publishes([__DIR__.'/resources/views/errors' => resource_path('views/errors'),]);
 
-        $this->app['router']->aliasMiddleware('sso' , \Newtech\SSOBridge\App\Http\Middleware\SSORouteAccess::class);
-        $this->app['router']->aliasMiddleware('auth' , \Newtech\SSOBridge\App\Http\Middleware\SSOAuthenticate::class);
+        $this->app['router']->aliasMiddleware('sso' , \Newtech\SSOBridge\SSORouteAccess::class);
+        $this->app['router']->aliasMiddleware('auth' , \Newtech\SSOBridge\SSOAuthenticate::class);
         if(!$this->app['config']->has("auth.guards.sso")){
             $this->app['config']->set("auth.guards.sso", Array('driver' => 'sso', 'provider' => 'sso'));
         }
