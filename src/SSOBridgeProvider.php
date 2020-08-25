@@ -33,7 +33,7 @@ class SSOBridgeProvider extends ServiceProvider
             __DIR__ . '/database/migrations' => $this->app->databasePath() . '/migrations'
         ], 'migrations');
 
-        $this->app['router']->aliasMiddleware('ssobridge' , \Newtech\SSOBridge\App\Http\Middleware\SSOAuth::class);
-        $this->app['router']->aliasMiddleware('ssoroute' , \Newtech\SSOBridge\App\Http\Middleware\SSORoute::class);
+        $this->app['router']->aliasMiddleware('ssobridge' , \Newtech\SSOBridge\SSOAuth::class);
+        $this->app['router']->aliasMiddleware('ssoroute' , \Newtech\SSOBridge\SSORoute::class);
     }
 }

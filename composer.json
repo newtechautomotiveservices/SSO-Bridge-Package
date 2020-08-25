@@ -16,10 +16,7 @@
     "autoload": {
         "psr-0": {
             "Newtech\\SSOBridge\\": "src/"
-        },
-        "files": [
-            "src/app/Http/helpers.php"
-        ]
+        }
     },
     "extra": {
         "laravel": {
