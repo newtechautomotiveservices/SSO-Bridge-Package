@@ -40,11 +40,12 @@ class SSOController extends Controller
 
     public function logout(){
         $response = Http::post(Str::finish(config('sso.authentication_url'), '/').'api/appControl/logout', [
-            'token' => request()->user()->account->remember,
+            'token' => request()->user()->getRememberToken(),
             'account' => request()->user()->account->id
         ]);
         \Cookie::queue(\Cookie::forget('ssoAuth'));
-        return $this->refreshPermissions();
+        $this->refreshPermissions();
+        return redirect('/');
     }
 
     public function refreshPermissions(){
