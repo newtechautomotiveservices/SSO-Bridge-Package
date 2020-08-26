@@ -74,10 +74,10 @@ class SSOGuard implements Guard
             if(!is_null($user)){
                 $this->provider->updateRememberToken($user, $credentials->remember);
                 $user->cache();
-                $value = Array(
+                $value = json_encode(Array(
                     'id' => $user->account->id,
                     'remember' => $user->getRememberToken()
-                );
+                ));
                 \Cookie::queue('ssoAuth', $value, 10080);
                 if(!in_array('default::access_site', Session::get('sso.permissions') ?? [])){
                     return null;
