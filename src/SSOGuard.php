@@ -31,8 +31,8 @@ class SSOGuard implements Guard
      */
     public function __construct(
         UserProvider $provider,
-        Request $request, 
-        $userKey = 'email', 
+        Request $request,
+        $userKey = 'email',
         $inputKey = 'paswword')
     {
         $this->provider = $provider;
@@ -69,11 +69,19 @@ class SSOGuard implements Guard
             }
         }
         if (request()->cookie('ssoAuth')
-            && ($credentials = json_decode(request()->cookie('ssoAuth')))) {
+                && ($credentials = json_decode(request()->cookie('ssoAuth')))) {
             $user = $this->provider->retrieveByToken($credentials->id, $credentials->remember);
             if(!is_null($user)){
                 $this->provider->updateRememberToken($user, $credentials->remember);
                 $user->cache();
+                $value = Array(
+                    'id' => $user->account->id,
+                    'remember' => $user->getRememberToken()
+                );
+                \Cookie::queue('ssoAuth', $value, 10080);
+                if(!in_array('default::access_site', Session::get('sso.permissions') ?? [])){
+                    return null;
+                }
             }
         }
         return $this->user = $user;

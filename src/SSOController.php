@@ -56,10 +56,11 @@ class SSOController extends Controller
     public function changeUser($id){
         $response = Http::post(Str::finish(config('sso.authentication_url'), '/').'api/appControl/userchange', [
             'app_id' => config('sso.id'),
-            'token' => request()->user()->getRememberToken(),
-            'account' => request()->user()->account->id,
+            'token' => !is_null(request()->user()) ? request()->user()->getRememberToken() : Session::get('sso')['remember'],
+            'account' => request()->user()->account->id ?? Session::get('sso')['account']->id,
             'user_id' => $id
         ]);
+        dd($response->body());
         if($response->successful()){
             return $this->refreshPermissions();
         }

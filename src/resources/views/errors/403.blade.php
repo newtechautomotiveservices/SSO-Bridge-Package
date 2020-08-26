@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Laravel</title>
+    <title>{{config('app.name')}}</title>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -72,10 +72,10 @@
             <div class="card mt-2">
                 <div class="card-body">
                     <!--Blue select-->
-                    @if(isset(\Auth::user()->possibleStores))
-                        <select id="storeSelect" class="mdb-select md-form colorful-select dropdown-dark" onchange="selectStore()">
-                            @foreach(\Auth::user()->possibleStores as $store)
-                                <option value="{{$store}}">{{$store}}</option>
+                    @if(isset(\Session::get('sso')['possibleUsers']))
+                        <select id="userSelect" class="mdb-select md-form colorful-select dropdown-dark" onchange="selectStore()">
+                            @foreach(\Session::get('sso')['possibleUsers'] as $potential)
+                                <option value='{{ $potential->id }}' {{ $potential->id == Session::get('sso')['id'] ? 'selected' : '' }}>{{ $potential->display }}</option>
                             @endforeach
                         </select>
 
@@ -113,16 +113,14 @@
 
 <script>
     function selectStore() {
-        let store_id = $('#storeSelect')[0].value;
+        let user_id = $('#userSelect')[0].value;
 
         $.ajax({
-            type: 'POST',
-            url: '/ajax/user/setStore',
-            data: {
-                store_id: store_id
-            },
+            type: 'GET',
+            url: '/ssobridge/changeUser/noauth/' + user_id,
             success: function (data) {
                 console.log(data);
+                window.location.reload()
             }
         });
     }

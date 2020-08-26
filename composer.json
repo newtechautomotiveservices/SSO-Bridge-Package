@@ -24,5 +24,10 @@
                 "Newtech\\SSOBridge\\SSOBridgeProvider"
             ]
         }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "php artisan vendor:publish Newtech\\SSOBridge\\SSOBridgeProvider"
+        ]
     }
 }
