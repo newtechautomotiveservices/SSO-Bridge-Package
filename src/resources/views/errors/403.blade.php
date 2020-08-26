@@ -53,7 +53,6 @@
 
     <!-- Mask & flexbox options-->
     <div class="mask rgba-black-light d-flex justify-content-center align-items-center">
-
         <!-- Content -->
         <div class="text-center mx-5 wow fadeIn">
             <div class="card">
@@ -84,7 +83,6 @@
                             <option value="unavailable">Stores Unavaiable</option>
                         </select>
                     @endif
-
                     <label class="mdb-main-label">Active Store</label>
                     <!--/Blue select-->
                 </div>
@@ -117,7 +115,7 @@
 
         $.ajax({
             type: 'GET',
-            url: '/ssobridge/changeUser/noauth/' + user_id,
+            url: '/ssobridge/changeUser/' + user_id,
             success: function (data) {
                 console.log(data);
                 window.location.reload()

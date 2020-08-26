@@ -28,6 +28,9 @@
     "scripts": {
         "post-install-cmd": [
             "php artisan vendor:publish Newtech\\SSOBridge\\SSOBridgeProvider"
+        ],
+        "post-update-cmd": [
+            "php artisan vendor:publish Newtech\\SSOBridge\\SSOBridgeProvider"
         ]
     }
 }

@@ -39,12 +39,14 @@ class SSOController extends Controller
     }
 
     public function logout(){
-        $response = Http::post(Str::finish(config('sso.authentication_url'), '/').'api/appControl/logout', [
-            'token' => request()->user()->getRememberToken(),
-            'account' => request()->user()->account->id
-        ]);
-        \Cookie::queue(\Cookie::forget('ssoAuth'));
-        $this->refreshPermissions();
+        if(!is_null($user = $this->getAuthUser())){
+            $response = Http::post(Str::finish(config('sso.authentication_url'), '/').'api/appControl/logout', [
+                'token' => $user->getRememberToken(),
+                'account' => $user->account->id
+            ]);
+            \Cookie::queue(\Cookie::forget('ssoAuth'));
+            $this->refreshPermissions();
+        }
         return redirect('/');
     }
 
@@ -54,15 +56,16 @@ class SSOController extends Controller
     }
 
     public function changeUser($id){
-        $response = Http::post(Str::finish(config('sso.authentication_url'), '/').'api/appControl/userchange', [
-            'app_id' => config('sso.id'),
-            'token' => !is_null(request()->user()) ? request()->user()->getRememberToken() : Session::get('sso')['remember'],
-            'account' => request()->user()->account->id ?? Session::get('sso')['account']->id,
-            'user_id' => $id
-        ]);
-        dd($response->body());
-        if($response->successful()){
-            return $this->refreshPermissions();
+        if(!is_null($user = $this->getAuthUser())){
+            $response = Http::post(Str::finish(config('sso.authentication_url'), '/').'api/appControl/userchange', [
+                'app_id' => config('sso.id'),
+                'token' => $user->getRememberToken(),
+                'account' => $user->account->id,
+                'user_id' => $id
+            ]);
+            if($response->successful()){
+                return $this->refreshPermissions();
+            }
         }
         return back();
     }
@@ -79,5 +82,13 @@ class SSOController extends Controller
             ['-', '_', ''],
             base64_encode($text)
         );
+    }
+
+    private function getAuthUser(){
+        $guard = new SSOGuard(\Auth::createUserProvider(config('auth.guards.sso.provider')), request());
+        if($guard->check()){
+            return $guard->user();
+        }
+        return null;
     }
 }

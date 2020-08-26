@@ -58,13 +58,12 @@ class SSOGuard implements Guard
         if(Session::has('sso') && Session::has('sso.id')){
             if(Session::get('sso.expire') < Carbon::now()->timestamp){
                 Session::pull('sso');
-            }else if(in_array('default::access_site', Session::get('sso.permissions') ?? [])){
+            }else{
                 $user = $this->provider->retrieveById('');
                 if(!is_null($user)){
                     $this->provider->updateRememberToken($user, Session::get('sso.remember'));
+                    return $user;
                 }
-                return $user;
-            }else{
                 Session::pull('sso');
             }
         }
@@ -79,9 +78,6 @@ class SSOGuard implements Guard
                     'remember' => $user->getRememberToken()
                 ));
                 \Cookie::queue('ssoAuth', $value, 10080);
-                if(!in_array('default::access_site', Session::get('sso.permissions') ?? [])){
-                    return null;
-                }
             }
         }
         return $this->user = $user;
