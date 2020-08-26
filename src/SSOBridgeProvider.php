@@ -57,7 +57,13 @@ class SSOBridgeProvider extends ServiceProvider
         });
 
         Auth::extend('sso', function ($app, $name, array $config) {
-            return new SSOGuard(Auth::createUserProvider($config['provider']), $this->app['request']);
+            $guard = new SSOGuard(Auth::createUserProvider($config['provider']), $this->app['request']);
+            if($guard->check()){
+                $user = $guard->user();
+                if(!in_array('default::access_site', $user->permissions)){
+                    abort(403, 'Access denied');
+                }
+            }
         });
     }
 }
