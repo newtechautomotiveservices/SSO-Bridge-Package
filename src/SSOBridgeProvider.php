@@ -64,6 +64,7 @@ class SSOBridgeProvider extends ServiceProvider
                     abort(403, 'Access denied');
                 }
             }
+            return $guard;
         });
     }
 }
