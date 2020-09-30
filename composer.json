@@ -14,7 +14,7 @@
         "guzzlehttp/guzzle": "*"
     },
     "autoload": {
-        "psr-0": {
+        "psr-4": {
             "Newtech\\SSOBridge\\": "src/"
         }
     },
