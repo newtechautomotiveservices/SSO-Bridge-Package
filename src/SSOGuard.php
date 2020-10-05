@@ -55,6 +55,9 @@ class SSOGuard implements Guard
             return $this->user;
         }
         $user = null;
+        if(config('sso.useFaker', false) && !(config('app.env') == 'staging' || config('app.env') == 'production')){
+            return $this->user = $this->provider->retrieveByCredentials([]);
+        }
         if(Session::has('sso') && Session::has('sso.id')){
             if(Session::get('sso.expire') < Carbon::now()->timestamp){
                 Session::pull('sso');
