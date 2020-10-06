@@ -37,8 +37,34 @@ class SSOUserProvider implements UserProvider
      */
     public function retrieveByCredentials($credentials)
     {
-        
-        return null;
+        $store = Array(
+            'name' => config('sso.faker.store.name', 'Faker Enterprises LLC.'),
+            'store_number' => config('sso.faker.store.number', '15212'),
+        );
+        $user = Array(
+            'id' => 0,
+            'display' => \Str::title(config('sso.faker.username', 'faker')).'@'.$store['name'],
+            'store' => $store
+        );
+
+        $user = Array(
+            'id' => $user['id'],
+            'username' => config('sso.faker.username', 'faker'),
+            'entityKey' => config('faker.sso.entityKey', 42),
+            'display' => $user['display'],
+            'account' => [
+                'id' => 0,
+                'first_name' => config('sso.faker.first_name', 'Faker'),
+                'last_name' => config('sso.faker.last_name', 'McFakerson'),
+                'email' => config('sso.faker.email', 'faker@fakerllc.com'),
+                'default_user' => 0
+            ],
+            'store' => $store,
+            'permissions' => config('sso.faker.permissions', ['default::access_site']),
+            'possibleUsers' => [$user]
+        );
+
+        return new SSOUser($user);
     }
 
      /**
