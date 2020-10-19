@@ -25,7 +25,7 @@ class SSOAuthenticate extends Authenticate
     }
 
     public function redirectTo($request, $guards = []){
-        if(in_array('sso', $guards)){
+        if((empty(array_diff($guards, [null])) && get_class($this->auth->guard()) == 'Newtech\SSOBridge\SSOGuard') || in_array('sso', $guards)){
             if($request->session()->has('sso') && $request->session()->has('sso.id')){
                 session()->pull('sso');
                 abort(403, 'Acess denied');
