@@ -20,7 +20,7 @@ class SSOAuthenticate extends Authenticate
     protected function unauthenticated($request, array $guards)
     {
         throw new AuthenticationException(
-            'Unauthenticated.', $guards, $this->redirectTo($request,$guards)
+            'Unauthenticated.', $guards, "/ssobridge/login"
         );
     }
 

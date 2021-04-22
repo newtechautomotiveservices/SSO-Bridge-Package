@@ -18,6 +18,7 @@ class SSOBridgeProvider extends ServiceProvider
     {
         // Bootstrap code here.
         include __DIR__.'/routes/web.php';
+        $this->loadViewsFrom(__DIR__ . '/resources/views', 'sso');
     }
 
     /**
@@ -29,6 +30,8 @@ class SSOBridgeProvider extends ServiceProvider
         $this->app->make('Newtech\SSOBridge\SSOController');
         $this->publishes([__DIR__ . '/config/sso.php' => config_path('sso.php')], 'config');
         $this->publishes([__DIR__.'/resources/views/errors' => resource_path('views/errors'),]);
+
+        
 
         $this->app['router']->aliasMiddleware('sso' , \Newtech\SSOBridge\SSORouteAccess::class);
         $this->app['router']->aliasMiddleware('auth' , \Newtech\SSOBridge\SSOAuthenticate::class);

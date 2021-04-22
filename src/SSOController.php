@@ -9,7 +9,6 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Http;
 
-
 class SSOController extends Controller
 {
     // Route: Setting the token.
@@ -47,6 +46,12 @@ class SSOController extends Controller
             $this->refreshPermissions();
         }
         return redirect('/');
+    }
+    
+    public function login(Request $request){
+        $authUrl = Str::finish(config('sso.authentication_url'), '/').'remote/'.config('sso.id').'?returnTo="'.base64_encode($request->root()).'"';
+        return view('sso::auth.login')
+            ->with('authUrl', $authUrl);
     }
 
     public function refreshPermissions(){

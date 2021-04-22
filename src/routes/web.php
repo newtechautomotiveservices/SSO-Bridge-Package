@@ -4,3 +4,4 @@ Route::get('/ssobridge/logout', 'Newtech\SSOBridge\SSOController@logout')->middl
 Route::get('/ssobridge/changeUser/{id}', 'Newtech\SSOBridge\SSOController@changeUser')->middleware('web')->name('sso.change');
 Route::get('/ssobridge/refresh', 'Newtech\SSOBridge\SSOController@refreshPermissions')->middleware('web')->name('sso.refresh');
 
+Route::get('/ssobridge/login', 'Newtech\SSOBridge\SSOController@login')->middleware('web')->name('sso.login');
